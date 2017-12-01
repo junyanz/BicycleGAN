@@ -5,7 +5,7 @@
 <img src='imgs/day2night.gif' width=800>  
 
 
-Pytorch implementation for multimodal image-to-image translation. For example, our model is able to synthesize possible day images with different types of lighting, sky and clouds given the same night image, for example:
+Pytorch implementation for multimodal image-to-image translation. For example,  given the same night image, our model is able to synthesize possible day images with different types of lighting, sky and clouds.
 
 <img src='imgs/teaser.jpg' width=850>  
 
@@ -28,11 +28,11 @@ git clone -b master --single-branch https://github.com/junyanz/BicycleGAN.git`
 
 ### Testing Usage
 
-Coming soon!
+Coming by tonight!
 
 ### Training Usage
 
-Coming soon!
+Coming by tongiht!
 
 ### Citation
 
