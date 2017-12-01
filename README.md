@@ -1,6 +1,6 @@
 # BicycleGAN
 
-**Code will be available soon**
+**Code will be available soon!**
 
 [[Project Page]](https://junyanz.github.io/BicycleGAN/) [[Paper]](https://arxiv.org/abs/1711.11586) [[Demo Video]](https://youtu.be/JvGysD2EFhw)
 
