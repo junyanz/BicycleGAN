@@ -1,8 +1,8 @@
 # BicycleGAN
 
-[[Project Page]](https://junyanz.github.io/BicycleGAN/) [[Paper]](https://arxiv.org/abs/1711.11586) [[Demo Video]](https://youtu.be/JvGysD2EFhw)
-
 **Code will be available soon**
+
+[[Project Page]](https://junyanz.github.io/BicycleGAN/) [[Paper]](https://arxiv.org/abs/1711.11586) [[Demo Video]](https://youtu.be/JvGysD2EFhw)
 
 <img src='imgs/day2night.gif' width=800>  
 
