@@ -8,7 +8,7 @@
 		font-size:18px;
 		margin-left: auto;
 		margin-right: auto;
-		width: 1250px;
+		width: 1000px;
 	}
 	h1 {
 		font-weight:300;
@@ -117,7 +117,7 @@
     <br>
           <center>
           	<span style="font-size:42px">Toward Multimodal Image-to-Image Translation</span><br>
-	  		  <table align=center width=1100px>
+	  		  <table align=center width=1000px>
 	  		  <!-- <table align=center width=540px> -->
 	  			  <tr>
 	  	              <td align=center width=200px>
@@ -157,7 +157,7 @@
 		  		  	  </td>
 	  			  </tr>
 			  </table>
-	  		  <table align=center width=1100px>
+	  		  <table align=center width=1000px>
 	  			  <tr>
 	  	              <td align=center width=100px>
 	  					<center>
@@ -180,24 +180,24 @@
 		  		  		</center>
 		  		  	  </td>
 			  </table>
-	  		  <table align=center width=1100px>
+	  		  <table align=center width=1000px>
 	  			  <tr>
-	  	              <td align=center width=400px>
+	  	              <td align=center width=275px>
 	  					<center>
 				          	<span style="font-size:18px"></span>
 		  		  		</center>
 		  		  	  </td>
-	  	              <td align=center width=200px>
+	  	              <td align=center width=225px>
 	  					<center>
 	  						<span style="font-size:22px">Code <a href='https://github.com/junyanz/BicycleGAN'> [GitHub]</a></span>
 		  		  		</center>
 		  		  	  </td>
-	  	              <td align=center width=200px>
+	  	              <td align=center width=225px>
 	  					<center>
 	  						<span style="font-size:22px">NIPS 2017<a href=''> [Paper]</a></span>
 		  		  		</center>
 		  		  	  </td>
-	  	              <td align=center width=400px>
+	  	              <td align=center width=275px>
 	  					<center>
 				          	<span style="font-size:18px"></span>
 		  		  		</center>
@@ -221,6 +221,8 @@
 
   		  <table align=center width=900px>
 	  		 	<center><h1>Abstract</h1></center>
+	  		 	<tr>
+		            <!-- <td align=center width=600px> -->
 					Many image-to-image translation problems are ambiguous, as a single input image
 					may correspond to multiple possible outputs. In this work, we aim to model
 					a <i>distribution</i> of possible outputs in a conditional generative modeling setting.
@@ -234,7 +236,9 @@
 					network architectures, and methods of injecting the latent code. Our proposed
 					method encourages bijective consistency between the latent encoding and output
 					modes. We present a systematic comparison of our method and other variants on
-					both perceptual realism and diversity
+					both perceptual realism and diversity.
+					<!-- </td> -->
+				</tr>
   		  <br>
 		  <hr>
 
@@ -270,28 +274,39 @@
 				<span style="font-size:16px"></span>
 			  </td>
 			</tr>
-  			  <!-- <tr> -->
-  	              <td align=center width=600px>
-  					<center>
-  						<span style="font-size:28px"><a href="">Extended Results</a></span>
-	  		  		</center>
-	  		  	  </td>
-  		  	  <!-- </tr> -->
 		  </table>
+  		  <table align=center width=600px>
+  		  	<tr>
+		        <td align=center width=600px>
+					<span style="font-size:16px"><b>Unaligned z</b> <a href="https://people.eecs.berkeley.edu/~junyanz/projects/BicycleGAN/web_arxiv/shoes_random_z_20_20/">[edges &rarr; shoes]</a></span>
+					<span style="font-size:16px"><a href="https://people.eecs.berkeley.edu/~junyanz/projects/BicycleGAN/web_arxiv/handbags_random_z_20_20/">[edges &rarr; handbags]</a></span>
+					<span style="font-size:16px"><a href="https://people.eecs.berkeley.edu/~junyanz/projects/BicycleGAN/web_arxiv/facades_random_z_20_20/">[labels &rarr; facades]</a></span>
+				</td>
+			</tr>
+  		  	<tr>
+		        <td align=center width=600px>
+					<span style="font-size:16px"><b>Aligned z</b> <a href="https://people.eecs.berkeley.edu/~junyanz/projects/BicycleGAN/web_arxiv/shoes_fixed_z_100_6/">[edges &rarr; shoes]</a></span>
+					<span style="font-size:16px"><a href="https://people.eecs.berkeley.edu/~junyanz/projects/BicycleGAN/web_arxiv/handbags_fixed_z_100_6/">[edges &rarr; handbags]</a></span>
+					<span style="font-size:16px"><a href="https://people.eecs.berkeley.edu/~junyanz/projects/BicycleGAN/web_arxiv/facades_fixed_z_100_6/">[labels &rarr; facades]</a></span>
+				</td>
+			</tr>
+		</table>
 
 		<hr>
 
 		<center><h1> Exploring the Latent Space</h1><center>
-			  <table align=center width=800px>
+		<table align=center width=800px>
 			<tr>
-							<td align=center>
-						<a href=""><img  src = "./index_files/day2night.gif"></a><br>
-				<span style="font-size:16px"></span>
+				<td align=center>
+					<a href=""><img src = "./index_files/day2night.gif"></a><br>
+					<span style="font-size:16px"></span>
 				</td>
 			</tr>
 		</table>
+
+		<hr>
+
  		<center><h1>Try the BicycleGAN model</h1></center>
-		  <!-- The GitHub page has scripts for fetching our model, and a slightly modified version of Caffe which does color pre-processing (if so desired). We recommend going to the <a href='https://github.com/richzhang/splitbrainauto'>GitHub</a> page and following instructions in the readme. -->
 
   		  <table align=center width=900px>
   			  <tr>
@@ -303,15 +318,15 @@
 			  </tr>
 		  </table>
 
+		  <br>
+
   		  <table align=center width=800px>
 			  <tr><center>
 				<span style="font-size:28px"><a href='https://github.com/junyanz/BicycleGAN'>[GitHub]</a>
 			  <br>
 			  </center></tr>
-			  <!-- <tr><center> -->
- 			<!-- <span style="font-size:28px"><a>&nbsp;Model: [Prototxt] Weights: [Unrescaled] [Rescaled]</a></span> -->
-			  <!-- </center></tr> -->
 		  </table>
+		  <br>
 
 		  <hr>
 
@@ -341,26 +356,22 @@
   		  <br>
 		  <hr>
 
-<!--   		  <table align=center width=1100px>
+  		  <table align=center width=1000px>
   			  <tr>
   	              <td width=400px>
   					<left>
-	  		  <center><h1>Related and Concurrent Work</h1></center>
-	  		  		<span style="font-size:24px"><center><b> Automatic Colorization with Deep Networks </b> </center></span><br>
+	  		  <center><h1>Related Work</h1></center>
+	  		  		<!-- <span style="font-size:24px"><center><b> Automatic Colorization with Deep Networks </b> </center></span><br> -->
 
-					R. Zhang, P. Isola, A. A. Efros. <b>Colorful Image Colorization.</b> In ECCV, 2016. <a href="https://arxiv.org/abs/1603.08511">[PDF]</a><a href="http://richzhang.github.io/colorization/"> [Website]</a><a href="http://demos.algorithmia.com/colorize-photos/"> [Demo]</a></br>
-
-					<br>
-
-					G. Larsson, M. Maire, and G. Shakhnarovich. <b>Learning Representations for Automatic Colorization.</b> In ECCV, 2016. <a href="http://arxiv.org/pdf/1603.06668.pdf"> [PDF]</a><a href="http://people.cs.uchicago.edu/~larsson/colorization/"> [Website]</a></br>
+					P. Isola, J.Y. Zhu, T. Zhou, A. A. Efros. <b>Image-to-image translation with conditional adversarial networks.</b> In CVPR, 2017. <a href="https://arxiv.org/pdf/1611.07004v1.pdf">[PDF]</a><a href="https://phillipi.github.io/pix2pix/"> [Website]</a></br>
 
 					<br>
 
-					S. Iizuka, E. Simo-Serra, and H. Ishikawa. <b>Let there be Color!: Joint End-to-end Learning of Global and Local Image Priors for Automatic Image Colorization with Simultaneous Classification.</b> In SIGGRAPH, 2016. <a href="http://hi.cs.waseda.ac.jp/~iizuka/projects/colorization/data/colorization_sig2016.pdf"> [PDF]<a href="http://hi.cs.waseda.ac.jp/~iizuka/projects/colorization/"> [Website]</a></a></br>
+					J.Y. Zhu*, T. Park*, P. Isola, A. A. Efros. <b>Unpaired Image-to-Image Translation using Cycle-Consistent Adversarial Networks.</b> In ICCV, 2017. <a href="https://arxiv.org/abs/1703.10593"> [PDF]</a><a href="https://junyanz.github.io/CycleGAN/"> [Website]</a></br>
 
 					<br>
 
-	  		  		<span style="font-size:24px"><center><b> User Interaction with Deep Networks </b> </center></span><br>
+<!-- 	  		  		<span style="font-size:24px"><center><b> User Interaction with Deep Networks </b> </center></span><br>
 
 					P. Isola, J.Y. Zhu, T. Zhou, A. A. Efros. <b>Image to Image Translation with Conditional Adversarial Networks.</b> In CVPR, 2017. <a href="https://arxiv.org/pdf/1611.07004.pdf"> [PDF]</a><a href="https://phillipi.github.io/pix2pix/"> [Website]</a><a href="https://affinelayer.com/pixsrv/"> [Demo]</a></br>
 
@@ -378,20 +389,20 @@
 
 					<br>
 
-					Preferred Networks, Inc. <b>PaintsChainer.</b><a href="https://paintschainer.preferred.tech/"> [Demo]</a>
+					Preferred Networks, Inc. <b>PaintsChainer.</b><a href="https://paintschainer.preferred.tech/"> [Demo]</a> -->
 
 			</left>
 		</td>
 			 </tr>
-		</table> -->
+		</table>
 		<hr>
 
-  		  <table align=center width=1100px>
+  		  <table align=center width=1000px>
   			  <tr>
   	              <td width=400px>
   					<left>
 	  		  <center><h1>Acknowledgements</h1></center>
-				We thank Phillip Isola and Tinghui Zhou for helpful discussions. This work wassupported in part by Adobe Inc., DARPA, AFRL, DoD MURI award N000141110688, NSF awardsIIS-1633310, IIS-1427425, IIS-1212798, the Berkeley Artificial Intelligence Research (BAIR) Lab,and hardware donations from NVIDIA. JYZ is supported by Facebook Graduate Fellowship, RZ byAdobe Research Fellowship, and DP by NVIDIA Graduate Fellowship.
+				We thank Phillip Isola and Tinghui Zhou for helpful discussions. This work wassupported in part by Adobe Inc., DARPA, AFRL, DoD MURI award N000141110688, NSF awards IIS-1633310, IIS-1427425, IIS-1212798, the Berkeley Artificial Intelligence Research (BAIR) Lab,and hardware donations from NVIDIA. JYZ is supported by Facebook Graduate Fellowship, RZ byAdobe Research Fellowship, and DP by NVIDIA Graduate Fellowship.
 			</left>
 		</td>
 			 </tr>
