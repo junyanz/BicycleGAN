@@ -5,7 +5,7 @@
 <img src='imgs/day2night.gif' width=800>  
 
 
-Pytorch implementation for generating diverse results given the same input, for example:
+Pytorch implementation for multimodal image-to-image translation. For example, our model is able to synthesize possible day images with different types of lighting, sky and clouds given the same night image, for example:
 
 <img src='imgs/teaser.jpg' width=850>  
 
