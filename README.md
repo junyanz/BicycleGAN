@@ -28,11 +28,11 @@ git clone -b master --single-branch https://github.com/junyanz/BicycleGAN.git`
 
 ### Testing Usage
 
-Coming by tonight!
+Coming soon!
 
 ### Training Usage
 
-Coming by tongiht!
+Coming soon!
 
 ### Citation
 
