@@ -4,9 +4,10 @@
 
 <img src='imgs/day2night.gif' width=800>  
 
+
 Pytorch implementation for generating diverse results given the same input, for example:
 
-<img src='imgs/teaser.jpg'>  
+<img src='imgs/teaser.jpg' width=850>  
 
 **Toward Multimodal Image-to-Image Translation.**  
 [Jun-Yan Zhu](https://people.eecs.berkeley.edu/~junyanz/),
@@ -15,7 +16,7 @@ Pytorch implementation for generating diverse results given the same input, for 
 In NIPS, 2017.
 
 ## Example results
-<img src='imgs/results_matrix.jpg' width=1000>  
+<img src='imgs/results_matrix.jpg' width=820>  
 
 
 ## Getting Started ###
