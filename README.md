@@ -24,7 +24,7 @@ In NIPS, 2017.
 ### Installation
 Clone the master branch of the respository:
 ```bash
-git clone -b master --single-branch https://github.com/junyanz/BicycleGAN.git`
+git clone -b master --single-branch https://github.com/junyanz/BicycleGAN.git
 ```
 
 ### Testing Usage
