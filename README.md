@@ -69,7 +69,7 @@ bash ./scripts/test_shoes.sh --sync
 ```
 Results can be found at `./results/edges2shoes/val_sync/index.html`.
 
-### Generate Morphing Videos.
+### Generate Morphing Videos
 - We can also produce a morphing video similar to this [GIF](imgs/day2night.gif) and Youtube [video](http://www.youtube.com/watch?v=JvGysD2EFhw&t=2m21s).
 ```bash
 bash ./scripts/video_shoes.sh
@@ -84,7 +84,7 @@ Currently, we are working on merging our internal code with the public pix2pix/C
 
 ### Datasets (from pix2pix)
 Download the datasets using the following script. Many of the datasets are collected by other researchers. Please cite their papers if you use the data.
-- Only download the testset.
+- Download the testset.
 ```bash
 bash ./datasets/download_testset.sh dataset_name
 ```
