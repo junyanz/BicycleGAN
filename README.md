@@ -1,10 +1,10 @@
+<img src='imgs/day2night.gif' align="right" width=360>
+
+<br><br><br><br>
+
 # BicycleGAN
-
-**Code will be available soon!**
-
 [[Project Page]](https://junyanz.github.io/BicycleGAN/) [[Paper]](https://arxiv.org/abs/1711.11586) [[Demo Video]](https://youtu.be/JvGysD2EFhw)
 
-<img src='imgs/day2night.gif' width=800>  
 
 Pytorch implementation for multimodal image-to-image translation. For example,  given the same night image, our model is able to synthesize possible day images with different types of lighting, sky and clouds.
 
@@ -20,20 +20,88 @@ In NIPS, 2017.
 <img src='imgs/results_matrix.jpg' width=820>  
 
 
+## Prerequisites
+- Linux or macOS
+- Python 2 or 3
+- CPU or NVIDIA GPU + CUDA CuDNN
+
+
 ## Getting Started ###
 ### Installation
-Clone the master branch of the respository:
+- Clone this repo:
 ```bash
 git clone -b master --single-branch https://github.com/junyanz/BicycleGAN.git
+cd BicycleGAN
+```
+- Install PyTorch and dependencies from http://pytorch.org
+- Install python libraries [visdom](https://github.com/facebookresearch/visdom), [dominate](https://github.com/Knio/dominate), and [moviepy](https://github.com/Zulko/moviepy).   
+For pip users:
+```bash
+bash ./scripts/install_pip.sh
+```
+For conda users:
+```bash
+bash ./scripts/install_conda.sh
 ```
 
-### Testing Usage
 
+### Use a Pre-trained Model
+- Download some test photos (e.g. edges2shoes):
+```bash
+bash ./datasets/download_testset.sh edges2shoes
+```
+- Download a pre-trained model (e.g. edges2shoes):
+```bash
+bash ./pretrained_models/download_model.sh edges2shoes
+```
+
+- Generate results with the model
+```bash
+bash ./scripts/test_shoes.sh
+```
+The test results will be saved to a html file here: `./results/edges2shoes/val/index.html`.
+
+- Generate results with synchronized latent vectors
+```bash
+bash ./scripts/test_shoes.sh --sync
+```
+Results can be found at `./results/edges2shoes/val_sync/index.html`.
+
+### Generate Morphing Videos.
+- We can also produce a morphing video similar to this [GIF](imgs/teaser.jpg) and Youtube [video](http://www.youtube.com/watch?v=JvGysD2EFhw&t=2m21s).
+```bash
+bash ./scripts/video_shoes.sh
+```
+Results can be found at `./videos/edges2shoes/`.
+
+### Model Training
 Coming soon!
 
-### Training Usage
+Currently, we are working on merging our internal code with the public pix2pix/CycleGAN codebase, and retraining the models with the new code soon.
 
-Coming soon!
+
+### Datasets (from pix2pix)
+Download the datasets using the following script. Many of the datasets are collected by other researchers. Please cite their papers if you use the data.
+- Only download the testset.
+```bash
+bash ./datasets/download_testset.sh dataset_name
+```
+- Download the training and testset.
+```bash
+bash ./datasets/download_dataset.sh dataset_name
+```
+- `facades`: 400 images from [CMP Facades dataset](http://cmp.felk.cvut.cz/~tylecr1/facade). [[Citation](datasets/bibtex/facades.tex)]
+- `maps`: 1096 training images scraped from Google Maps
+- `edges2shoes`: 50k training images from [UT Zappos50K dataset](http://vision.cs.utexas.edu/projects/finegrained/utzap50k). Edges are computed by [HED](https://github.com/s9xie/hed) edge detector + post-processing. [[Citation](datasets/bibtex/shoes.tex)]
+- `edges2handbags`: 137K Amazon Handbag images from [iGAN project](https://github.com/junyanz/iGAN). Edges are computed by [HED](https://github.com/s9xie/hed) edge detector + post-processing. [[Citation](datasets/bibtex/handbags.tex)]
+
+## Models
+Download the pre-trained models with the following script.
+```bash
+bash ./pretrained_models/download_model.sh model_name
+```
+- `edges2shoes` (edge -> photo): trained on UT Zappos50K dataset.
+[More models are coming soon!]
 
 ### Citation
 

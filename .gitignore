@@ -1,8 +1,9 @@
 *.fuse*
 *.pth
+*.pyc
 debug*
 datasets/
-overfit/
+videos/
 checkpoints/
 results/
 build/
