@@ -1,0 +1,6 @@
+@incollection{zhu2017multimodal,
+	title = {Toward Multimodal Image-to-Image Translation},
+	author = {Zhu, Jun-Yan and Zhang, Richard and Pathak, Deepak and Darrell, Trevor and Efros, Alexei A and Wang, Oliver and Shechtman, Eli},
+	booktitle = {Advances in Neural Information Processing Systems 30},
+	year = {2017},
+}
