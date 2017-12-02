@@ -35,10 +35,12 @@ cd BicycleGAN
 ```
 - Install PyTorch and dependencies from http://pytorch.org
 - Install python libraries [visdom](https://github.com/facebookresearch/visdom), [dominate](https://github.com/Knio/dominate), and [moviepy](https://github.com/Zulko/moviepy).   
+
 For pip users:
 ```bash
 bash ./scripts/install_pip.sh
 ```
+
 For conda users:
 ```bash
 bash ./scripts/install_conda.sh
@@ -68,16 +70,16 @@ bash ./scripts/test_shoes.sh --sync
 Results can be found at `./results/edges2shoes/val_sync/index.html`.
 
 ### Generate Morphing Videos.
-- We can also produce a morphing video similar to this [GIF](imgs/teaser.jpg) and Youtube [video](http://www.youtube.com/watch?v=JvGysD2EFhw&t=2m21s).
+- We can also produce a morphing video similar to this [GIF](imgs/day2night.gif) and Youtube [video](http://www.youtube.com/watch?v=JvGysD2EFhw&t=2m21s).
 ```bash
 bash ./scripts/video_shoes.sh
 ```
 Results can be found at `./videos/edges2shoes/`.
 
 ### Model Training
-Coming soon!
+*Coming soon!*
 
-Currently, we are working on merging our internal code with the public pix2pix/CycleGAN codebase, and retraining the models with the new code soon.
+Currently, we are working on merging our internal code with the public pix2pix/CycleGAN codebase, and retraining the models with the new code.
 
 
 ### Datasets (from pix2pix)
@@ -101,7 +103,8 @@ Download the pre-trained models with the following script.
 bash ./pretrained_models/download_model.sh model_name
 ```
 - `edges2shoes` (edge -> photo): trained on UT Zappos50K dataset.
-[More models are coming soon!]
+
+More models are coming soon!
 
 ### Citation
 
