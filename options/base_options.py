@@ -53,7 +53,6 @@ class BaseOptions():
         self.parser.add_argument('--where_add', type=str, default='all', help='input|all|middle; where to add z in the network G')
         self.parser.add_argument('--conditional_D', action='store_true', help='if use conditional GAN for D')
         self.parser.add_argument('--init_type', type=str, default='xavier', help='network initialization [normal|xavier|kaiming|orthogonal]')
-        self.parser.add_argument('--lambda_kl', type=float, default=0.01, help='weight for kl loss')
         self.parser.add_argument('--center_crop', action='store_true', help='if apply for center cropping for the test')
         # special tasks
         self.initialized = True

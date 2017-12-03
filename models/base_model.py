@@ -18,7 +18,7 @@ class BaseModel():
         self.Tensor = torch.cuda.FloatTensor if self.gpu_ids else torch.Tensor
         self.save_dir = os.path.join(opt.checkpoints_dir, opt.name)
 
-    def init_data(self, opt, use_D=True, use_D2=True, use_E=True):
+    def init_data(self, opt, use_D=True, use_D2=True, use_E=True, use_vae=True):
         print('---------- Networks initialized -------------')
         # define tensors
         self.input_A = self.Tensor(opt.batchSize, opt.input_nc, opt.fineSize, opt.fineSize)
@@ -60,7 +60,7 @@ class BaseModel():
                                           which_model_netE=opt.which_model_netE,
                                           norm=opt.norm, nl=opt.nl,
                                           init_type=opt.init_type, gpu_ids=self.gpu_ids,
-                                          vaeLike=opt.lambda_kl > 0.0)
+                                          vaeLike=use_vae)
             networks.print_network(self.netE)
 
         if not opt.isTrain:
