@@ -1,10 +1,11 @@
-CLASS='edges2shoes'  # facades, day2night,shoes256
+CLASS='edges2shoes'  # facades, day2night, edges2shoes, edges2handbags, maps
 MODEL='bicycle_gan'
-GPU_ID=0
-DISPLAY_ID=$((GPU_ID*10+1)) #${2}
+CLASS=${1}
+GPU_ID=${2}
+DISPLAY_ID=$((GPU_ID*10+1))
 PORT=2005
 NZ=8
-CLASS=${1}
+
 
 CHECKPOINTS_DIR=../checkpoints_pub/${CLASS}/
 DATE=`date '+%d_%m_%Y_%H'`
