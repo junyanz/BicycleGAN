@@ -1,3 +1,5 @@
+from models.one_direction_test_model import OneDirectionTestModel
+
 def create_model(opt):
     model = None
     print('Loading model %s...' % opt.model)
