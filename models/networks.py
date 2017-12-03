@@ -57,7 +57,7 @@ def weights_init_orthogonal(m):
         init.constant(m.bias.data, 0.0)
 
 
-def init_weights(net, init_type='normal'):
+def init_weights(net, init_type='xavier'):
     print('initialization method [%s]' % init_type)
     if init_type == 'normal':
         net.apply(weights_init_normal)
@@ -112,7 +112,7 @@ def get_non_linearity(layer_type='relu'):
 
 def define_G(input_nc, output_nc, nz, ngf,
              which_model_netG='unet_128', norm='batch', nl='relu',
-             use_dropout=False, init_type='normal', gpu_ids=[], where_add='input', upsample='bilinear'):
+             use_dropout=False, init_type='xavier', gpu_ids=[], where_add='input', upsample='bilinear'):
     netG = None
     use_gpu = len(gpu_ids) > 0
     norm_layer = get_norm_layer(layer_type=norm)
@@ -147,11 +147,10 @@ def define_G(input_nc, output_nc, nz, ngf,
 
 def define_D(input_nc, ndf, which_model_netD,
              norm='batch', nl='lrelu',
-             use_sigmoid=False, init_type='normal', num_Ds=1, gpu_ids=[]):
+             use_sigmoid=False, init_type='xavier', num_Ds=1, gpu_ids=[]):
     netD = None
     use_gpu = len(gpu_ids) > 0
     norm_layer = get_norm_layer(layer_type=norm)
-    # if nl == 'relu':
     nl = 'lrelu'  # use leaky relu for D
     nl_layer = get_non_linearity(layer_type=nl)
     if use_gpu:
@@ -174,7 +173,7 @@ def define_D(input_nc, ndf, which_model_netD,
 
 def define_E(input_nc, output_nc, ndf, which_model_netE,
              norm='batch', nl='lrelu',
-             init_type='normal', gpu_ids=[], vaeLike=False):
+             init_type='xavier', gpu_ids=[], vaeLike=False):
     netE = None
     use_gpu = len(gpu_ids) > 0
     norm_layer = get_norm_layer(layer_type=norm)

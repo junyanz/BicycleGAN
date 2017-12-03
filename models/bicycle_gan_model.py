@@ -110,8 +110,8 @@ class BiCycleGANModel(BaseModel):
         else:
             self.loss_kl = 0
         # 3, reconstruction |fake_B-real_B|
-        if self.opt.lambda_A > 0.0:
-            self.loss_G_L1 = self.criterionL1(self.fake_B_encoded, self.real_B_encoded) * self.opt.lambda_A
+        if self.opt.lambda_L1 > 0.0:
+            self.loss_G_L1 = self.criterionL1(self.fake_B_encoded, self.real_B_encoded) * self.opt.lambda_L1
         else:
             self.loss_G_L1 = 0.0
 
@@ -169,7 +169,7 @@ class BiCycleGANModel(BaseModel):
         ret_dict = OrderedDict([('z_encoded_mag', np.mean(np.abs(z1))),
                                 ('G_total', loss_G.data[0])])
 
-        if self.opt.lambda_A > 0.0:
+        if self.opt.lambda_L1 > 0.0:
             G_L1 = self.loss_G_L1.data[0] if self.loss_G_L1 is not None else 0.0
             ret_dict['G_L1_encoded'] = self.loss_G_L1.data[0]
 
