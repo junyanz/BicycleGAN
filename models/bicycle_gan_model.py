@@ -32,7 +32,7 @@ class BiCycleGANModel(BaseModel):
         if self.skip:
             print('skip this point data_size = %d' % self.input_A.size(0))
             return
-        half_size = self.opt.batchSize / 2
+        half_size = self.opt.batchSize // 2
         self.real_A = Variable(self.input_A)
         self.real_B = Variable(self.input_B)
         # A1, B1 for encoded; A2, B2 for random
