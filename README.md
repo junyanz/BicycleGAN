@@ -6,7 +6,7 @@
 [[Project Page]](https://junyanz.github.io/BicycleGAN/) [[Paper]](https://arxiv.org/abs/1711.11586) [[Demo Video]](https://youtu.be/JvGysD2EFhw)
 
 
-Pytorch implementation for multimodal image-to-image translation. For example,  given the same night image, our model is able to synthesize possible day images with different types of lighting, sky and clouds.
+Pytorch implementation for multimodal image-to-image translation. For example,  given the same night image, our model is able to synthesize possible day images with different types of lighting, sky and clouds. The training requires paired data.
 
 <img src='imgs/teaser.jpg' width=850>  
 
@@ -79,7 +79,7 @@ Results can be found at `./videos/edges2shoes/`.
 ### Model Training
 *Coming soon!*
 
-Currently, we are working on merging our internal code with the public pix2pix/CycleGAN codebase, and retraining the models with the new code.
+The training requires **paired** input-output images (similar to pix2pix）. Currently, we are working on merging our internal code with the public pix2pix/CycleGAN codebase, and retraining the models with the new code.
 
 
 ### Datasets (from pix2pix)
