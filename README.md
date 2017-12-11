@@ -79,7 +79,7 @@ Results can be found at `./videos/edges2shoes/`.
 ### Model Training
 *Coming soon!*
 
-The training requires **paired** input-output images (similar to pix2pix）. Currently, we are working on merging our internal code with the public pix2pix/CycleGAN codebase, and retraining the models with the new code.
+The training requires **paired** input-output images (similar to pix2pix. Currently, we are working on merging our internal code with the public pix2pix/CycleGAN codebase, and retraining the models with the new code.
 
 
 ### Datasets (from pix2pix)
