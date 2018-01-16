@@ -4,12 +4,12 @@ import ntpath
 import time
 from . import util
 from . import html
-from pdb import set_trace as st
+from scipy.misc import imresize
 import math
 
 
 # save image to the disk
-def save_images(webpage, images, names, image_path, title=None, width=256):
+def save_images(webpage, images, names, image_path, title=None, width=256, aspect_ratio=1.0):
     image_dir = webpage.get_image_dir()
     short_path = ntpath.basename(image_path)
     # name = os.path.splitext(short_path)[0]
@@ -21,10 +21,15 @@ def save_images(webpage, images, names, image_path, title=None, width=256):
     txts = []
     links = []
 
-    for label, image_numpy in zip(names, images):
+    for label, im in zip(names, images):
         image_name = '%s_%s.jpg' % (name, label)
         save_path = os.path.join(image_dir, image_name)
-        util.save_image(image_numpy, save_path)
+        h, w, _ = im.shape
+        if aspect_ratio > 1.0:
+            im = imresize(im, (h, int(w * aspect_ratio)), interp='bicubic')
+        if aspect_ratio < 1.0:
+            im = imresize(im, (int(h / aspect_ratio), w), interp='bicubic')
+        util.save_image(im, save_path)
 
         ims.append(image_name)
         txts.append(label)
@@ -115,27 +120,3 @@ class Visualizer():
         # write losses to text file as well
         with open(self.log_path, "a") as log_file:
             log_file.write(message)
-
-    # save image to the disk
-    def save_images_old(self, webpage, visuals, image_path, short=False):
-        image_dir = webpage.get_image_dir()
-        if short:
-            short_path = ntpath.basename(image_path)
-            name = os.path.splitext(short_path)[0]
-        else:
-            name = image_path
-
-        webpage.add_header(name)
-        ims = []
-        txts = []
-        links = []
-
-        for label, image_numpy in visuals.items():
-            image_name = '%s_%s.jpg' % (name, label)
-            save_path = os.path.join(image_dir, image_name)
-            util.save_image(image_numpy, save_path)
-
-            ims.append(image_name)
-            txts.append(label)
-            links.append(image_name)
-        webpage.add_images(ims, txts, links, width=self.win_size)

@@ -13,21 +13,14 @@ class AlignedDataset(BaseDataset):
         self.root = opt.dataroot
         self.center_crop = opt.center_crop
         self.dir_AB = os.path.join(opt.dataroot, opt.phase)
-
         self.AB_paths = sorted(make_dataset(self.dir_AB))
-
         assert(opt.resize_or_crop == 'resize_and_crop')
-
-        transform_list = [transforms.ToTensor(),
-                          transforms.Normalize((0.5, 0.5, 0.5),
-                                               (0.5, 0.5, 0.5))]
-        self.transform = transforms.Compose(transform_list)
 
     def __getitem__(self, index):
         AB_path = self.AB_paths[index]
         AB = Image.open(AB_path).convert('RGB')
         AB = AB.resize((self.opt.loadSize * 2, self.opt.loadSize), Image.BICUBIC)
-        AB = self.transform(AB)
+        AB = transforms.ToTensor()(AB)
 
         w_total = AB.size(2)
         w = int(w_total / 2)
@@ -43,6 +36,9 @@ class AlignedDataset(BaseDataset):
                w_offset:w_offset + self.opt.fineSize]
         B = AB[:, h_offset:h_offset + self.opt.fineSize,
                w + w_offset:w + w_offset + self.opt.fineSize]
+        A = transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))(A)
+        B = transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))(B)
+
         if self.opt.which_direction == 'BtoA':
             input_nc = self.opt.output_nc
             output_nc = self.opt.input_nc

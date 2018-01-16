@@ -53,6 +53,6 @@ for i, data in enumerate(islice(dataset, opt.how_many)):
             all_names.append('random sample%2.2d' % nn)
 
     img_path = 'input image%3.3i' % i
-    save_images(webpage, all_images, all_names, img_path, None, width=opt.fineSize)
+    save_images(webpage, all_images, all_names, img_path, None, width=opt.fineSize, aspect_ratio=opt.aspect_ratio)
 
 webpage.save()

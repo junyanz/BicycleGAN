@@ -46,7 +46,7 @@ case ${CLASS} in
   NITER=200
   NITER_DECAY=200
   LOAD_SIZE=600
-  SAVE_EPOCH=50
+  SAVE_EPOCH=25
   DIRECTION='BtoA'
   ;;
 'day2night')

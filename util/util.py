@@ -85,24 +85,6 @@ def save_image(image_numpy, image_path):
     image_pil.save(image_path, 'JPEG', quality=100)
 
 
-def info(object, spacing=10, collapse=1):
-    """Print methods and doc strings.
-    Takes module, class, list, dictionary, or string."""
-    methodList = [e for e in dir(object) if isinstance(getattr(object, e), collections.Callable)]
-    processFunc = collapse and (lambda s: " ".join(s.split())) or (lambda s: s)
-    print("\n".join(["%s %s" %
-                     (method.ljust(spacing),
-                      processFunc(str(getattr(object, method).__doc__)))
-                     for method in methodList]))
-
-
-def varname(p):
-    for line in inspect.getframeinfo(inspect.currentframe().f_back)[3]:
-        m = re.search(r'\bvarname\s*\(\s*([A-Za-z_][A-Za-z0-9_]*)\s*\)', line)
-        if m:
-            return m.group(1)
-
-
 def print_numpy(x, val=True, shp=False):
     x = x.astype(np.float64)
     if shp:
