@@ -48,11 +48,11 @@ bash ./scripts/install_conda.sh
 
 
 ### Use a Pre-trained Model
-- Download some test photos (e.g. edges2shoes):
+- Download some test photos (e.g., edges2shoes):
 ```bash
 bash ./datasets/download_testset.sh edges2shoes
 ```
-- Download a pre-trained model (e.g. edges2shoes):
+- Download a pre-trained model (e.g., edges2shoes):
 ```bash
 bash ./pretrained_models/download_model.sh edges2shoes
 ```
@@ -77,10 +77,17 @@ bash ./scripts/video_shoes.sh
 Results can be found at `./videos/edges2shoes/`.
 
 ### Model Training
-*Coming soon!*
+- To train a model, download the training images (e.g., edges2shoes).
+```bash
+bash ./datasets/download_dataset.sh edges2shoes
+```
 
-The training requires **paired** input-output images (similar to pix2pix. Currently, we are working on merging our internal code with the public pix2pix/CycleGAN codebase, and retraining the models with the new code.
-
+- Train a model:
+```bash
+bash ./datasets/train_shoes.sh edges2shoes
+```
+- To view training results and loss plots, run `python -m visdom.server` and click the URL http://localhost:8097. To see more intermediate results, check out  `./checkpoints/edges2shoes_bicycle_gan/web/index.html`
+- See the training details for other datasets in `./scripts/train.sh`.
 
 ### Datasets (from pix2pix)
 Download the datasets using the following script. Many of the datasets are collected by other researchers. Please cite their papers if you use the data.

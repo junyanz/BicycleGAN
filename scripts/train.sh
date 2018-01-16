@@ -9,7 +9,7 @@ NZ=8
 
 CHECKPOINTS_DIR=../checkpoints_pub/${CLASS}/
 DATE=`date '+%d_%m_%Y_%H'`
-NAME=${CLASS}_${DATE}
+NAME=${CLASS}_${MODEL}_${DATE}
 
 
 # dataset
