@@ -110,9 +110,9 @@ Download the pre-trained models with the following script.
 ```bash
 bash ./pretrained_models/download_model.sh model_name
 ```
-- `edges2shoes` (edge -> photo): trained on UT Zappos50K dataset.
-- `night2day` (nighttime scene -> daytime scene): trained on around 100 [webcams](http://transattr.cs.brown.edu/). Please use the test script `./scripts/test_night2day.sh` for this model.
-
+- `edges2shoes` (edge -> photo) trained on UT Zappos50K dataset.
+- `night2day` (nighttime scene -> daytime scene) trained on around 100 [webcams](http://transattr.cs.brown.edu/): download: `bash ./datasets/download_testset.sh night2day`; test:  `bash ./scripts/test_night2day.sh`
+- `facades_label2image` (facade label -> facade photo) trained on the CMP Facades dataset: download: `bash ./datasets/download_testset.sh facades`; test:  `bash ./scripts/test_facades.sh`
 
 More models are coming soon!
 
