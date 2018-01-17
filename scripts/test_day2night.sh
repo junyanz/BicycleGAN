@@ -1,19 +1,21 @@
 # models
-RESULTS_DIR='./results/edges2shoes'
-G_PATH='./pretrained_models/edges2shoes_net_G.pth'
-E_PATH='./pretrained_models/edges2shoes_net_E.pth'
+RESULTS_DIR='./results/day2night'
+G_PATH='./pretrained_models/day2night_net_G.pth'
+E_PATH='./pretrained_models/day2night_net_E.pth'
 
 # dataset
-CLASS='edges2shoes'
+CLASS='day2night'
 DIRECTION='AtoB' # from domain A to domain B
-LOAD_SIZE=256 # scale images to this size
+LOAD_SIZE=286 # scale images to this size
 FINE_SIZE=256 # then crop to this size
-INPUT_NC=1  # number of channels in the input image
+INPUT_NC=3  # number of channels in the input image
+ASPECT_RATIO=1.4 # change aspect ratio for the test images
 
 # misc
 GPU_ID=0   # gpu id
 HOW_MANY=10 # number of input images duirng test
 NUM_SAMPLES=10 # number of samples per input images
+
 
 # command
 CUDA_VISIBLE_DEVICES=${GPU_ID} python ./test.py \
@@ -26,5 +28,6 @@ CUDA_VISIBLE_DEVICES=${GPU_ID} python ./test.py \
   --input_nc ${INPUT_NC} \
   --how_many ${HOW_MANY} \
   --n_samples ${NUM_SAMPLES} \
+  --aspect_ratio ${ASPECT_RATIO} \
   --center_crop \
   --no_flip
