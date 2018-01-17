@@ -36,8 +36,8 @@ case ${CLASS} in
   NO_FLIP='--no_flip'
   ;;
 'edges2handbags')
-  NITER=30
-  NITER_DECAY=30
+  NITER=15
+  NITER_DECAY=15
   LOAD_SIZE=256
   SAVE_EPOCH=5
   INPUT_NC=1
