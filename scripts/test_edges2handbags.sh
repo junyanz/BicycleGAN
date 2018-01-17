@@ -1,20 +1,19 @@
 # models
-RESULTS_DIR='./results/facades'
-G_PATH='./pretrained_models/facades_label2image_net_G.pth'
-E_PATH='./pretrained_models/facades_label2image_net_E.pth'
+RESULTS_DIR='./results/edges2handbags'
+G_PATH='./pretrained_models/edges2handbags_net_G.pth'
+E_PATH='./pretrained_models/edges2handbags_net_E.pth'
 
 # dataset
-CLASS='facades'
-DIRECTION='BtoA' # from domain A to domain B
-LOAD_SIZE=286 # scale images to this size
+CLASS='edges2handbags'
+DIRECTION='AtoB' # from domain A to domain B
+LOAD_SIZE=256 # scale images to this size
 FINE_SIZE=256 # then crop to this size
-INPUT_NC=3  # number of channels in the input image
+INPUT_NC=1  # number of channels in the input image
 
 # misc
 GPU_ID=0   # gpu id
 HOW_MANY=10 # number of input images duirng test
 NUM_SAMPLES=10 # number of samples per input images
-
 
 # command
 CUDA_VISIBLE_DEVICES=${GPU_ID} python ./test.py \

@@ -13,7 +13,7 @@ ASPECT_RATIO=1.0
  # change aspect ratio for the test images
 
 # misc
-GPU_ID=1   # gpu id
+GPU_ID=0   # gpu id
 HOW_MANY=10 # number of input images duirng test
 NUM_SAMPLES=10 # number of samples per input images
 
@@ -31,4 +31,5 @@ CUDA_VISIBLE_DEVICES=${GPU_ID} python ./test.py \
   --n_samples ${NUM_SAMPLES} \
   --aspect_ratio ${ASPECT_RATIO} \
   --center_crop \
-  --no_flip
+  --no_flip \
+  --no_encode

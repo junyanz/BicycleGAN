@@ -65,14 +65,14 @@ The test results will be saved to a html file here: `./results/edges2shoes/val/i
 
 - Generate results with synchronized latent vectors
 ```bash
-bash ./scripts/test_shoes.sh --sync
+bash ./scripts/test_edges2shoes.sh --sync
 ```
 Results can be found at `./results/edges2shoes/val_sync/index.html`.
 
 ### Generate Morphing Videos
 - We can also produce a morphing video similar to this [GIF](imgs/day2night.gif) and Youtube [video](http://www.youtube.com/watch?v=JvGysD2EFhw&t=2m21s).
 ```bash
-bash ./scripts/video_shoes.sh
+bash ./scripts/video_edges2shoes.sh
 ```
 Results can be found at `./videos/edges2shoes/`.
 
@@ -84,7 +84,7 @@ bash ./datasets/download_dataset.sh edges2shoes
 
 - Train a model:
 ```bash
-bash ./datasets/train_shoes.sh
+bash ./datasets/train_edges2shoes.sh
 ```
 - To view training results and loss plots, run `python -m visdom.server` and click the URL http://localhost:8097. To see more intermediate results, check out  `./checkpoints/edges2shoes_bicycle_gan/web/index.html`
 - See more training details for other datasets in `./scripts/train.sh`.
@@ -103,7 +103,6 @@ bash ./datasets/download_dataset.sh dataset_name
 - `maps`: 1096 training images scraped from Google Maps
 - `edges2shoes`: 50k training images from [UT Zappos50K dataset](http://vision.cs.utexas.edu/projects/finegrained/utzap50k). Edges are computed by [HED](https://github.com/s9xie/hed) edge detector + post-processing. [[Citation](datasets/bibtex/shoes.tex)]
 - `edges2handbags`: 137K Amazon Handbag images from [iGAN project](https://github.com/junyanz/iGAN). Edges are computed by [HED](https://github.com/s9xie/hed) edge detector + post-processing. [[Citation](datasets/bibtex/handbags.tex)]
-- `night2day`: 17823 night2day image pairs from ['transient scene attributes' webcam dataset](http://transattr.cs.brown.edu/). [[Citation](datasets/bibtex/night2day.tex)]
 
 ## Models
 Download the pre-trained models with the following script.
@@ -111,6 +110,12 @@ Download the pre-trained models with the following script.
 bash ./pretrained_models/download_model.sh model_name
 ```
 - `edges2shoes` (edge -> photo) trained on UT Zappos50K dataset.
+- `edges2handbags` (edge -> photo) trained on Amazon handbags images..
+```bash
+bash ./pretrained_models/download_model.sh edges2handbags
+bash ./datasets/download_testset.sh edges2handbags
+bash ./scripts/test_edges2handbags.sh
+```
 - `night2day` (nighttime scene -> daytime scene) trained on around 100 [webcams](http://transattr.cs.brown.edu/).
 ```bash
 bash ./pretrained_models/download_model.sh night2day
