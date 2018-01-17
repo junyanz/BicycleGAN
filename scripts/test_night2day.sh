@@ -1,18 +1,19 @@
 # models
-RESULTS_DIR='./results/day2night'
-G_PATH='./pretrained_models/day2night_net_G.pth'
-E_PATH='./pretrained_models/day2night_net_E.pth'
+RESULTS_DIR='./results/night2day'
+G_PATH='./pretrained_models/night2day_net_G.pth'
+E_PATH='./pretrained_models/night2day_net_E.pth'
 
 # dataset
-CLASS='day2night'
+CLASS='night2day'
 DIRECTION='AtoB' # from domain A to domain B
 LOAD_SIZE=286 # scale images to this size
 FINE_SIZE=256 # then crop to this size
 INPUT_NC=3  # number of channels in the input image
-ASPECT_RATIO=1.4 # change aspect ratio for the test images
+ASPECT_RATIO=1.4
+ # change aspect ratio for the test images
 
 # misc
-GPU_ID=0   # gpu id
+GPU_ID=1   # gpu id
 HOW_MANY=10 # number of input images duirng test
 NUM_SAMPLES=10 # number of samples per input images
 

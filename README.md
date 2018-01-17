@@ -103,6 +103,7 @@ bash ./datasets/download_dataset.sh dataset_name
 - `maps`: 1096 training images scraped from Google Maps
 - `edges2shoes`: 50k training images from [UT Zappos50K dataset](http://vision.cs.utexas.edu/projects/finegrained/utzap50k). Edges are computed by [HED](https://github.com/s9xie/hed) edge detector + post-processing. [[Citation](datasets/bibtex/shoes.tex)]
 - `edges2handbags`: 137K Amazon Handbag images from [iGAN project](https://github.com/junyanz/iGAN). Edges are computed by [HED](https://github.com/s9xie/hed) edge detector + post-processing. [[Citation](datasets/bibtex/handbags.tex)]
+- `night2day`: 17823 night2day image pairs from ['transient scene attributes' webcam dataset](http://transattr.cs.brown.edu/). [[Citation](datasets/bibtex/night2day.tex)]
 
 ## Models
 Download the pre-trained models with the following script.
@@ -110,7 +111,7 @@ Download the pre-trained models with the following script.
 bash ./pretrained_models/download_model.sh model_name
 ```
 - `edges2shoes` (edge -> photo): trained on UT Zappos50K dataset.
-- `night2day` (nighttime scene -> daytime scene): trained on around 100 [webcams](http://transattr.cs.brown.edu/). Please use the test script `./scripts/test_night2day.sh` for this model. 
+- `night2day` (nighttime scene -> daytime scene): trained on around 100 [webcams](http://transattr.cs.brown.edu/). Please use the test script `./scripts/test_night2day.sh` for this model.
 
 
 More models are coming soon!
