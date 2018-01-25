@@ -140,7 +140,7 @@ def define_G(input_nc, output_nc, nz, ngf,
         raise NotImplementedError('Generator model name [%s] is not recognized' % which_model_netG)
 
     if len(gpu_ids) > 0:
-        netG.cuda(device_id=gpu_ids[0])
+        netG.cuda(gpu_ids[0])
     init_weights(netG, init_type=init_type)
     return netG
 
@@ -166,7 +166,7 @@ def define_D(input_nc, ndf, which_model_netD,
     else:
         raise NotImplementedError('Discriminator model name [%s] is not recognized' % which_model_netD)
     if use_gpu:
-        netD.cuda(device_id=gpu_ids[0])
+        netD.cuda(gpu_ids[0])
     init_weights(netD, init_type=init_type)
     return netD
 
@@ -192,7 +192,7 @@ def define_E(input_nc, output_nc, ndf, which_model_netE,
     else:
         raise NotImplementedError('Encoder model name [%s] is not recognized' % which_model_netE)
     if use_gpu:
-        netE.cuda(device_id=gpu_ids[0])
+        netE.cuda(gpu_ids[0])
     init_weights(netE, init_type=init_type)
     return netE
 
