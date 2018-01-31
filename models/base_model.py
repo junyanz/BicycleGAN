@@ -20,9 +20,6 @@ class BaseModel():
 
     def init_data(self, opt, use_D=True, use_D2=True, use_E=True, use_vae=True):
         print('---------- Networks initialized -------------')
-        # define tensors
-        self.input_A = self.Tensor(opt.batchSize, opt.input_nc, opt.fineSize, opt.fineSize)
-        self.input_B = self.Tensor(opt.batchSize, opt.output_nc, opt.fineSize, opt.fineSize)
         # load/define networks: define G
         self.netG = networks.define_G(opt.input_nc, opt.output_nc, opt.nz, opt.ngf,
                                       which_model_netG=opt.which_model_netG,
@@ -190,8 +187,11 @@ class BaseModel():
         # set input images
         input_A = input['A' if AtoB else 'B']
         input_B = input['B' if AtoB else 'A']
-        self.input_A.resize_(input_A.size()).copy_(input_A)
-        self.input_B.resize_(input_B.size()).copy_(input_B)
+        if len(self.gpu_ids) > 0:
+            input_A = input_A.cuda(self.gpu_ids[0], async=True)
+            input_B = input_B.cuda(self.gpu_ids[0], async=True)
+        self.input_A = input_A
+        self.input_B = input_B
         # get image paths
         self.image_paths = input['A_paths' if AtoB else 'B_paths']
 
