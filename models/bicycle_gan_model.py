@@ -194,13 +194,15 @@ class BiCycleGANModel(BaseModel):
         real_A_random = util.tensor2im(self.real_A_random.data)
         real_B_encoded = util.tensor2im(self.real_B_encoded.data)
         real_B_random = util.tensor2im(self.real_B_random.data)
-
+        ret_dict = OrderedDict([('real_A_encoded', real_A_encoded),  ('real_B_encoded', real_B_encoded),
+                                ('real_A_random', real_A_random), ('real_B_random', real_B_random)])
+       
         if self.opt.isTrain:
             fake_random = util.tensor2im(self.fake_B_random.data)
             fake_encoded = util.tensor2im(self.fake_B_encoded.data)
-            ret_dict = OrderedDict([('real_A_encoded', real_A_encoded),  ('real_B_encoded', real_B_encoded), ('fake_B_encoded', fake_encoded),
-                                    ('fake_B_random', fake_random), ('real_A_random', real_A_random), ('real_B_random', real_B_random)])
-            return ret_dict
+            ret_dict['fake_random'] = fake_random
+            ret_dict['fake_encoded'] = fake_encoded
+        return ret_dict
 
     def save(self, label):
         self.save_network(self.netG, 'G', label, self.gpu_ids)
