@@ -5,13 +5,12 @@ from models.models import create_model
 from util.visualizer import save_images
 from itertools import islice
 from util import html
-from util import util
 import numpy as np
 
 
 # helper function
 def get_random_z(opt):
-    z_samples = np.random.normal(0, 1, (opt.n_samples+1, opt.nz))
+    z_samples = np.random.normal(0, 1, (opt.n_samples + 1, opt.nz))
     return z_samples
 
 
@@ -29,8 +28,10 @@ model.eval()
 print('Loading model %s' % opt.model)
 
 # create website
-web_dir = os.path.join(opt.results_dir, opt.phase + '_sync' if opt.sync else opt.phase)
-webpage = html.HTML(web_dir, 'Training = %s, Phase = %s, G = %s, E = %s' % (opt.name, opt.phase, opt.G_path, opt.E_path))
+web_dir = os.path.join(opt.results_dir, opt.phase +
+                       '_sync' if opt.sync else opt.phase)
+webpage = html.HTML(web_dir, 'Training = %s, Phase = %s, G = %s, E = %s' % (
+    opt.name, opt.phase, opt.G_path, opt.E_path))
 
 # sample random z
 if opt.sync:
@@ -44,7 +45,8 @@ for i, data in enumerate(islice(dataset, opt.how_many)):
         z_samples = get_random_z(opt)
     for nn in range(opt.n_samples + 1):
         encode_B = nn == 0 and not opt.no_encode
-        _, real_A, fake_B, real_B, _ = model.test_simple(z_samples[nn], encode_real_B=encode_B)
+        _, real_A, fake_B, real_B, _ = model.test_simple(
+            z_samples[nn], encode_real_B=encode_B)
         if nn == 0:
             all_images = [real_A, real_B, fake_B]
             all_names = ['input', 'ground truth', 'encoded']
@@ -53,6 +55,7 @@ for i, data in enumerate(islice(dataset, opt.how_many)):
             all_names.append('random sample%2.2d' % nn)
 
     img_path = 'input image%3.3i' % i
-    save_images(webpage, all_images, all_names, img_path, None, width=opt.fineSize, aspect_ratio=opt.aspect_ratio)
+    save_images(webpage, all_images, all_names, img_path, None,
+                width=opt.fineSize, aspect_ratio=opt.aspect_ratio)
 
 webpage.save()

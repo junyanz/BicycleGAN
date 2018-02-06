@@ -1,7 +1,6 @@
 import numpy as np
 import os
 import ntpath
-import time
 from . import util
 from . import html
 from scipy.misc import imresize
@@ -44,7 +43,8 @@ class Visualizer():
         self.use_html = opt.isTrain and not opt.no_html
         self.win_size = opt.display_winsize
         self.name = opt.name
-        self.log_path = os.path.join(opt.checkpoints_dir, opt.name, 'train_log.txt')
+        self.log_path = os.path.join(
+            opt.checkpoints_dir, opt.name, 'train_log.txt')
 
         if self.display_id > 0:
             import visdom
@@ -69,17 +69,20 @@ class Visualizer():
                 images.append(image_numpy.transpose([2, 0, 1]))
                 idx += 1
             if len(visuals.items()) % ncols != 0:
-                white_image = np.ones_like(image_numpy.transpose([2, 0, 1]))*255
+                white_image = np.ones_like(
+                    image_numpy.transpose([2, 0, 1])) * 255
                 images.append(white_image)
             self.vis.images(images, nrow=nrows, win=self.display_id + 1,
                             opts=dict(title=title))
 
         if self.use_html and save_result:  # save images to a html file
             for label, image_numpy in visuals.items():
-                img_path = os.path.join(self.img_dir, 'epoch%.3d_%s.%s' % (epoch, label, image_format))
+                img_path = os.path.join(
+                    self.img_dir, 'epoch%.3d_%s.%s' % (epoch, label, image_format))
                 util.save_image(image_numpy, img_path)
             # update website
-            webpage = html.HTML(self.web_dir, 'Experiment name = %s' % self.name, reflesh=1)
+            webpage = html.HTML(
+                self.web_dir, 'Experiment name = %s' % self.name, reflesh=1)
             for n in range(epoch, 0, -1):
                 webpage.add_header('epoch [%d]' % n)
                 ims = []
@@ -99,9 +102,11 @@ class Visualizer():
         if not hasattr(self, 'plot_data'):
             self.plot_data = {'X': [], 'Y': [], 'legend': list(errors.keys())}
         self.plot_data['X'].append(epoch + counter_ratio)
-        self.plot_data['Y'].append([errors[k] for k in self.plot_data['legend']])
+        self.plot_data['Y'].append([errors[k]
+                                    for k in self.plot_data['legend']])
         self.vis.line(
-            X=np.stack([np.array(self.plot_data['X'])]*len(self.plot_data['legend']), 1),
+            X=np.stack([np.array(self.plot_data['X'])] *
+                       len(self.plot_data['legend']), 1),
             Y=np.array(self.plot_data['Y']),
             opts={
                 'title': self.name + ' loss over time',

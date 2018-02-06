@@ -4,7 +4,6 @@ from options.train_options import TrainOptions
 from data.data_loader import CreateDataLoader
 from models.models import create_model
 from util.visualizer import Visualizer
-import sys
 
 opt = TrainOptions().parse()  # set CUDA_VISIBLE_DEVICES before import torch
 data_loader = CreateDataLoader(opt)
@@ -32,7 +31,8 @@ for epoch in range(1, opt.niter + opt.niter_decay + 1):
 
         if save_result or total_steps % opt.display_freq == 0:
             save_result = save_result or total_steps % opt.update_html_freq == 0
-            visualizer.display_current_results(model.get_current_visuals(), epoch, ncols=1, save_result=save_result)
+            visualizer.display_current_results(
+                model.get_current_visuals(), epoch, ncols=1, save_result=save_result)
             save_result = False
 
         if total_steps % opt.print_freq == 0:
@@ -40,7 +40,8 @@ for epoch in range(1, opt.niter + opt.niter_decay + 1):
             t = (time.time() - iter_start_time) / opt.batchSize
             visualizer.print_current_errors(epoch, epoch_iter, errors, t)
             if opt.display_id > 0:
-                visualizer.plot_current_errors(epoch, float(epoch_iter)/dataset_size, opt, errors)
+                visualizer.plot_current_errors(epoch, float(
+                    epoch_iter) / dataset_size, opt, errors)
 
         if total_steps % opt.save_latest_freq == 0:
             print('saving the latest model (epoch %d, total_steps %d)' %

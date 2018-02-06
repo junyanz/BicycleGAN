@@ -2,11 +2,7 @@ from __future__ import print_function
 import torch
 import numpy as np
 from PIL import Image
-import inspect
-import re
-import numpy as np
 import os
-import collections
 import pickle
 
 
@@ -64,8 +60,8 @@ def interp_z(z0, z1, num_frames, interp_mode='linear'):
 
     if interp_mode == 'slerp':
         # st()
-        z0_n = z0 / (np.linalg.norm(z0)+1e-10)
-        z1_n = z1 / (np.linalg.norm(z1)+1e-10)
+        z0_n = z0 / (np.linalg.norm(z0) + 1e-10)
+        z1_n = z1 / (np.linalg.norm(z1) + 1e-10)
         omega = np.arccos(np.dot(z0_n, z1_n))
         sin_omega = np.sin(omega)
         if sin_omega < 1e-10 and sin_omega > -1e-10:
@@ -73,7 +69,8 @@ def interp_z(z0, z1, num_frames, interp_mode='linear'):
         else:
             for n in range(num_frames):
                 ratio = n / float(num_frames - 1)
-                z_t = np.sin((1 - ratio) * omega) / sin_omega * z0 + np.sin(ratio * omega) / sin_omega * z1
+                z_t = np.sin((1 - ratio) * omega) / sin_omega * \
+                    z0 + np.sin(ratio * omega) / sin_omega * z1
                 zs.append(z_t[np.newaxis, :])
         zs = np.concatenate(zs, axis=0).astype(np.float32)
 
@@ -109,11 +106,12 @@ def mkdir(path):
 
 
 def normalize_tensor(in_feat, eps=1e-10):
-    norm_factor = torch.sqrt(torch.sum(in_feat**2, dim=1)).repeat(1, in_feat.size()[1], 1, 1)
-    return in_feat / (norm_factor+eps)
+    norm_factor = torch.sqrt(torch.sum(in_feat**2, dim=1)
+                             ).repeat(1, in_feat.size()[1], 1, 1)
+    return in_feat / (norm_factor + eps)
 
 
 def cos_sim(in0, in1):
     in0_norm = normalize_tensor(in0)
     in1_norm = normalize_tensor(in1)
-    return torch.mean(torch.sum(in0_norm*in1_norm, dim=1))
+    return torch.mean(torch.sum(in0_norm * in1_norm, dim=1))

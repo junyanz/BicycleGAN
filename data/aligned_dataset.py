@@ -19,7 +19,8 @@ class AlignedDataset(BaseDataset):
     def __getitem__(self, index):
         AB_path = self.AB_paths[index]
         AB = Image.open(AB_path).convert('RGB')
-        AB = AB.resize((self.opt.loadSize * 2, self.opt.loadSize), Image.BICUBIC)
+        AB = AB.resize(
+            (self.opt.loadSize * 2, self.opt.loadSize), Image.BICUBIC)
         AB = transforms.ToTensor()(AB)
 
         w_total = AB.size(2)

@@ -3,7 +3,6 @@ import torch
 import util.util as util
 from torch.autograd import Variable
 from . import networks
-import itertools
 
 
 class BaseModel():
@@ -78,7 +77,8 @@ class BaseModel():
         print('-----------------------------------------------')
 
         # define loss functions
-        self.criterionGAN = networks.GANLoss(mse_loss=not use_sigmoid, tensor=self.Tensor)
+        self.criterionGAN = networks.GANLoss(
+            mse_loss=not use_sigmoid, tensor=self.Tensor)
         self.criterionL1 = torch.nn.L1Loss()
         self.criterionZ = torch.nn.L1Loss()
 
@@ -86,10 +86,12 @@ class BaseModel():
             # initialize optimizers
             self.schedulers = []
             self.optimizers = []
-            self.optimizer_G = torch.optim.Adam(self.netG.parameters(), lr=opt.lr, betas=(opt.beta1, 0.999))
+            self.optimizer_G = torch.optim.Adam(
+                self.netG.parameters(), lr=opt.lr, betas=(opt.beta1, 0.999))
             self.optimizers.append(self.optimizer_G)
             if use_E:
-                self.optimizer_E = torch.optim.Adam(self.netE.parameters(), lr=opt.lr, betas=(opt.beta1, 0.999))
+                self.optimizer_E = torch.optim.Adam(
+                    self.netE.parameters(), lr=opt.lr, betas=(opt.beta1, 0.999))
                 self.optimizers.append(self.optimizer_E)
 
             if use_D:
@@ -124,9 +126,6 @@ class BaseModel():
     def balance(self):
         pass
 
-    def get_image_paths(self):
-        pass
-
     def update_D(self, data):
         pass
 
@@ -157,7 +156,6 @@ class BaseModel():
         network.load_state_dict(torch.load(save_path))
 
     def load_network_test(self, network, network_path):
-        save_path = os.path.join(self.save_dir, network_path)
         network.load_state_dict(torch.load(network_path))
 
     def update_learning_rate(self):
