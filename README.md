@@ -20,6 +20,10 @@ In NIPS, 2017.
 <img src='imgs/results_matrix.jpg' width=820>  
 
 
+## Other Implementations
+- [[Tensorflow]](https://github.com/gitlimlab/BicycleGAN-Tensorflow) by Youngwoon Lee (USC CLVR Lab).
+- [[Tensorflow]](https://github.com/kvmanohar22/img2imgGAN) by Kv Manohar.
+
 ## Prerequisites
 - Linux or macOS
 - Python 2 or 3
