@@ -63,10 +63,7 @@ class BiCycleGANModel(BaseModel):
 
         # compute z_predict
         if self.opt.lambda_z > 0.0:
-            self.mu2, logvar2 = self.netE.forward(self.fake_B_random)
-            self.std2 = logvar2.mul(0.5).exp_()
-            eps2 = self.get_z_random(self.std2.size(0), self.std2.size(1), 'gauss')
-            self.z_predict = eps2.mul(self.std2).add_(self.mu2)
+            self.mu2, logvar2 = self.netE.forward(self.fake_B_random)  # mu2 is a point estimate
 
     def encode(self, input_data):
         mu, logvar = self.netE.forward(Variable(input_data, volatile=True))
@@ -137,7 +134,7 @@ class BiCycleGANModel(BaseModel):
             self.optimizer_D2.step()
 
     def backward_G_alone(self):
-        # 3, reconstruction |z_predit-z_random|
+        # 3, reconstruction |(E(G(A, z_random)))-z_random|
         if self.opt.lambda_z > 0.0:
             self.loss_z_L1 = torch.mean(torch.abs(self.mu2 - self.z_random)) * self.opt.lambda_z
             self.loss_z_L1.backward()
