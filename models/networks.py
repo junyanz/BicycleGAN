@@ -679,8 +679,8 @@ class E_ResNet(nn.Module):
         conv_layers = [
             nn.Conv2d(input_nc, ndf, kernel_size=4, stride=2, padding=1, bias=True)]
         for n in range(1, n_blocks):
-            input_ndf = ndf * min(max_ndf, n)  # 2**(n-1)
-            output_ndf = ndf * min(max_ndf, n + 1)  # 2**n
+            input_ndf = ndf * min(max_ndf, n)
+            output_ndf = ndf * min(max_ndf, n + 1)
             conv_layers += [BasicBlock(input_ndf,
                                        output_ndf, norm_layer, nl_layer)]
         conv_layers += [nl_layer(), nn.AvgPool2d(8)]
