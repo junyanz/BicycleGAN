@@ -88,7 +88,7 @@ bash ./datasets/download_dataset.sh edges2shoes
 
 - Train a model:
 ```bash
-bash ./datasets/train_edges2shoes.sh
+bash ./scripts/train_edges2shoes.sh
 ```
 - To view training results and loss plots, run `python -m visdom.server` and click the URL http://localhost:8097. To see more intermediate results, check out  `./checkpoints/edges2shoes_bicycle_gan/web/index.html`
 - See more training details for other datasets in `./scripts/train.sh`.
