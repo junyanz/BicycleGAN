@@ -39,7 +39,6 @@ class BiCycleGANModel(BaseModel):
         self.real_B_encoded = self.real_B[0:half_size]
         self.real_B_random = self.real_B[half_size:]
         # get encoded z
-
         self.mu, self.logvar = self.netE.forward(self.real_B_encoded)
         std = self.logvar.mul(0.5).exp_()
         eps = self.get_z_random(std.size(0), std.size(1), 'gauss')

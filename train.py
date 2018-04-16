@@ -1,8 +1,8 @@
 # import torch.backends.cudnn as cudnn
 import time
 from options.train_options import TrainOptions
-from data.data_loader import CreateDataLoader
-from models.models import create_model
+from data import CreateDataLoader
+from models import create_model
 from util.visualizer import Visualizer
 
 opt = TrainOptions().parse()  # set CUDA_VISIBLE_DEVICES before import torch
@@ -22,11 +22,10 @@ for epoch in range(1, opt.niter + opt.niter_decay + 1):
         iter_start_time = time.time()
         total_steps += opt.batchSize
         epoch_iter = total_steps - dataset_size * (epoch - 1)
-        model.update_D(data)
         if model.is_skip():
             continue
-        if i % opt.disc_iters == 0:
-            model.update_G()
+        model.update_D(data)
+        model.update_G()
         model.balance()
 
         if save_result or total_steps % opt.display_freq == 0:

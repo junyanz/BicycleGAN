@@ -24,12 +24,9 @@ class BaseModel():
                                       norm=opt.norm, nl=opt.nl, use_dropout=opt.use_dropout, init_type=opt.init_type,
                                       gpu_ids=self.gpu_ids, where_add=self.opt.where_add, upsample=opt.upsample)
         networks.print_network(self.netG)
-        self.netD, self.netD2, self.netDp = None, None, None
-        self.netE, self.netDZ = None, None
+        self.netD, self.netD2, self.netE = None, None, None
 
-        # if opt.isTrain:
         use_sigmoid = opt.gan_mode == 'dcgan'
-
         D_output_nc = opt.input_nc + opt.output_nc if self.opt.conditional_D else opt.output_nc
         # define D
         if not opt.isTrain:
@@ -105,9 +102,6 @@ class BaseModel():
 
             for optimizer in self.optimizers:
                 self.schedulers.append(networks.get_scheduler(optimizer, opt))
-            # st()
-
-        self.metric = 0
 
     def is_skip(self):
         return False

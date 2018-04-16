@@ -63,7 +63,7 @@ bash ./pretrained_models/download_model.sh edges2shoes
 
 - Generate results with the model
 ```bash
-bash ./scripts/test_shoes.sh
+bash ./scripts/test_edges2shoes.sh
 ```
 The test results will be saved to a html file here: `./results/edges2shoes/val/index.html`.
 
