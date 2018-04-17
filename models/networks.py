@@ -257,9 +257,9 @@ class D_NLayersMulti(nn.Module):
             self.down = nn.AvgPool2d(3, stride=2, padding=[
                                      1, 1], count_include_pad=False)
             for i in range(num_D - 1):
-                ndf = int(round(ndf / (2**(i + 1))))
+                ndf_i = int(round(ndf / (2**(i + 1))))
                 layers = self.get_layers(
-                    input_nc, ndf, n_layers, norm_layer, use_sigmoid)
+                    input_nc, ndf_i, n_layers, norm_layer, use_sigmoid)
                 self.model.append(nn.Sequential(*layers))
 
     def get_layers(self, input_nc, ndf=64, n_layers=3,
