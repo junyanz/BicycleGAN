@@ -57,18 +57,15 @@ class BaseModel():
 
         if not opt.isTrain:
             self.load_network_test(self.netG, opt.G_path)
-
             if use_E:
                 self.load_network_test(self.netE, opt.E_path)
 
         if opt.isTrain and opt.continue_train:
             self.load_network(self.netG, 'G', opt.which_epoch)
-
             if use_D:
                 self.load_network(self.netD, 'D', opt.which_epoch)
             if use_D2:
                 self.load_network(self.netD, 'D2', opt.which_epoch)
-
             if use_E:
                 self.load_network(self.netE, 'E', opt.which_epoch)
         print('-----------------------------------------------')

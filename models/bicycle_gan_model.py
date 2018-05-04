@@ -22,20 +22,18 @@ class BiCycleGANModel(BaseModel):
         self.skip = False
 
     def is_skip(self):
-        return self.skip
+        is_skip = self.opt.isTrain and self.input_A.size(0) < self.opt.batchSize
+        if is_skip:
+            print('skip this point data_size = %d' % self.input_A.size(0))
+        return is_skip
 
     def forward(self):
         # get real images
-        self.skip = self.opt.isTrain and self.input_A.size(0) < self.opt.batchSize
-        if self.skip:
-            print('skip this point data_size = %d' % self.input_A.size(0))
-            return
         half_size = self.opt.batchSize // 2
         self.real_A = Variable(self.input_A)
         self.real_B = Variable(self.input_B)
         # A1, B1 for encoded; A2, B2 for random
         self.real_A_encoded = self.real_A[0:half_size]
-        self.real_A_random = self.real_A[half_size:]
         self.real_B_encoded = self.real_B[0:half_size]
         self.real_B_random = self.real_B[half_size:]
         # get encoded z
@@ -44,7 +42,7 @@ class BiCycleGANModel(BaseModel):
         eps = self.get_z_random(std.size(0), std.size(1), 'gauss')
         self.z_encoded = eps.mul(std).add_(self.mu)
         # get random z
-        self.z_random = self.get_z_random(self.real_A_random.size(0), self.opt.nz, 'gauss')
+        self.z_random = self.get_z_random(self.real_A_encoded.size(0), self.opt.nz, 'gauss')
         # generate fake_B_encoded
         self.fake_B_encoded = self.netG.forward(self.real_A_encoded, self.z_encoded)
         # generate fake_B_random
@@ -53,7 +51,7 @@ class BiCycleGANModel(BaseModel):
             self.fake_data_encoded = torch.cat([self.real_A_encoded, self.fake_B_encoded], 1)
             self.real_data_encoded = torch.cat([self.real_A_encoded, self.real_B_encoded], 1)
             self.fake_data_random = torch.cat([self.real_A_encoded, self.fake_B_random], 1)
-            self.real_data_random = torch.cat([self.real_A_random, self.real_B_random], 1)
+            self.real_data_random = torch.cat([self.real_A[half_size:], self.real_B_random], 1)
         else:
             self.fake_data_encoded = self.fake_B_encoded
             self.fake_data_random = self.fake_B_random
@@ -113,12 +111,9 @@ class BiCycleGANModel(BaseModel):
         self.loss_G = self.loss_G_GAN + self.loss_G_GAN2 + self.loss_G_L1 + self.loss_kl
         self.loss_G.backward(retain_graph=True)
 
-    def update_D(self, data):
+    def update_D(self):
         self.set_requires_grad(self.netD, True)
-        self.set_input(data)
         self.forward()
-        if self.is_skip():
-            return
         # update D1
         if self.opt.lambda_GAN > 0.0:
             self.optimizer_D.zero_grad()
@@ -186,11 +181,10 @@ class BiCycleGANModel(BaseModel):
 
     def get_current_visuals(self):
         real_A_encoded = util.tensor2im(self.real_A_encoded.data)
-        real_A_random = util.tensor2im(self.real_A_random.data)
         real_B_encoded = util.tensor2im(self.real_B_encoded.data)
         real_B_random = util.tensor2im(self.real_B_random.data)
         ret_dict = OrderedDict([('real_A_encoded', real_A_encoded), ('real_B_encoded', real_B_encoded),
-                                ('real_A_random', real_A_random), ('real_B_random', real_B_random)])
+                                ('real_B_random', real_B_random)])
 
         if self.opt.isTrain:
             fake_random = util.tensor2im(self.fake_B_random.data)

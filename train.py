@@ -22,9 +22,10 @@ for epoch in range(1, opt.niter + opt.niter_decay + 1):
         iter_start_time = time.time()
         total_steps += opt.batchSize
         epoch_iter = total_steps - dataset_size * (epoch - 1)
+        model.set_input(data)
         if model.is_skip():
             continue
-        model.update_D(data)
+        model.update_D()
         model.update_G()
         model.balance()
 
