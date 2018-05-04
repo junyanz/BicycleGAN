@@ -8,6 +8,8 @@
 
 Pytorch implementation for multimodal image-to-image translation. For example,  given the same night image, our model is able to synthesize possible day images with different types of lighting, sky and clouds. The training requires paired data.
 
+**Note**: The current software works well with PyTorch 0.1-0.3. PyTorch 0.4 support will be added by the end of May.
+
 <img src='imgs/teaser.jpg' width=850>  
 
 **Toward Multimodal Image-to-Image Translation.**  

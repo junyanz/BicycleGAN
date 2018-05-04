@@ -182,9 +182,7 @@ class BiCycleGANModel(BaseModel):
     def get_current_visuals(self):
         real_A_encoded = util.tensor2im(self.real_A_encoded.data)
         real_B_encoded = util.tensor2im(self.real_B_encoded.data)
-        real_B_random = util.tensor2im(self.real_B_random.data)
-        ret_dict = OrderedDict([('real_A_encoded', real_A_encoded), ('real_B_encoded', real_B_encoded),
-                                ('real_B_random', real_B_random)])
+        ret_dict = OrderedDict([('real_A_encoded', real_A_encoded), ('real_B_encoded', real_B_encoded)])
 
         if self.opt.isTrain:
             fake_random = util.tensor2im(self.fake_B_random.data)
