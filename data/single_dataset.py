@@ -32,7 +32,7 @@ class SingleDataset(BaseDataset):
         return {'A': A, 'A_paths': A_path}
 
     def __len__(self):
-        return len(self.A_paths)
+        return len(self.A_paths) // 2 * 2
 
     def name(self):
         return 'SingleImageDataset'
