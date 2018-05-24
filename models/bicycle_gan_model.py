@@ -196,5 +196,5 @@ class BiCycleGANModel(BaseModel):
         if self.opt.lambda_GAN > 0.0:
             self.save_network(self.netD, 'D', label, self.gpu_ids)
         if self.opt.lambda_GAN2 > 0.0 and not self.opt.use_same_D:
-            self.save_network(self.netD, 'D2', label, self.gpu_ids)
+            self.save_network(self.netD2, 'D2', label, self.gpu_ids)
         self.save_network(self.netE, 'E', label, self.gpu_ids)
