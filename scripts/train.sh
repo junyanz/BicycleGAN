@@ -8,7 +8,7 @@ PORT=2005
 NZ=8
 
 
-CHECKPOINTS_DIR=../checkpoints_pub/${CLASS}/
+CHECKPOINTS_DIR=../checkpoints/${CLASS}/
 DATE=`date '+%d_%m_%Y_%H'`
 NAME=${CLASS}_${MODEL}_${DATE}
 

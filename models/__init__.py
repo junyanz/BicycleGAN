@@ -5,6 +5,9 @@ def create_model(opt):
     if opt.model == 'bicycle_gan':
         from .bicycle_gan_model import BiCycleGANModel
         model = BiCycleGANModel()
+    elif opt.model == 'pix2pix':
+        from .pix2pix_model import Pix2PixModel
+        model = Pix2PixModel()
     else:
         raise ValueError("Model [%s] not recognized." % opt.model)
     model.initialize(opt)

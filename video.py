@@ -56,13 +56,11 @@ for i, data in enumerate(islice(dataset, opt.how_many)):
     for n in range(opt.n_samples):
         z0 = z_samples[n]
         z1 = z_samples[n + 1]
-        zs = util.interp_z(z0, z1, num_frames=opt.num_frames,
-                           interp_mode=interp_mode)
+        zs = util.interp_z(z0, z1, num_frames=opt.num_frames, interp_mode=interp_mode)
 
         for k in range(opt.num_frames):
-            _, _, fake_B, _, _ = model.test_simple(zs[k], encode_real_B=False)
-            fake_B_b = np.full(
-                (h + hb, w + wb, opt.output_nc), 255, fake_B.dtype)
+            _, _, fake_B, _, _ = model.test(zs[k], encode=False)
+            fake_B_b = np.full((h + hb, w + wb, opt.output_nc), 255, fake_B.dtype)
             fake_B_b[hb:, wb:, :] = fake_B
             frames[k + opt.num_frames * n].append(fake_B_b)
 

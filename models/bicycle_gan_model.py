@@ -1,9 +1,6 @@
-import numpy as np
 import torch
-from collections import OrderedDict
-from torch.autograd import Variable
-import util.util as util
 from .base_model import BaseModel
+from . import networks
 
 
 class BiCycleGANModel(BaseModel):
@@ -14,39 +11,104 @@ class BiCycleGANModel(BaseModel):
         if opt.isTrain:
             assert opt.batchSize % 2 == 0  # load two images at one time.
 
+        BaseModel.initialize(self, opt)
+        # specify the training losses you want to print out. The program will call base_model.get_current_losses
+        self.loss_names = ['G_GAN', 'D', 'G_GAN2', 'D2', 'G_L1', 'z_L1', 'kl']
+        # specify the images you want to save/display. The program will call base_model.get_current_visuals
+        self.visual_names = ['real_A_encoded', 'real_B_encoded', 'fake_B_random', 'fake_B_encoded']
+        # specify the models you want to save to the disk. The program will call base_model.save_networks and base_model.load_networks
         use_D = opt.isTrain and opt.lambda_GAN > 0.0
         use_D2 = opt.isTrain and opt.lambda_GAN2 > 0.0 and not opt.use_same_D
         use_E = opt.isTrain or not opt.no_encode
-        BaseModel.initialize(self, opt)
-        self.init_data(opt, use_D=use_D, use_D2=use_D2, use_E=use_E, use_vae=True)
-        self.skip = False
+        use_vae = True
+        self.model_names = ['G']
+        self.netG = networks.define_G(opt.input_nc, opt.output_nc, opt.nz, opt.ngf, which_model_netG=opt.which_model_netG,
+                                      norm=opt.norm, nl=opt.nl, use_dropout=opt.use_dropout, init_type=opt.init_type,
+                                      gpu_ids=self.gpu_ids, where_add=self.opt.where_add, upsample=opt.upsample)
+        D_output_nc = opt.input_nc + opt.output_nc if opt.conditional_D else opt.output_nc
+        use_sigmoid = opt.gan_mode == 'dcgan'
+        if use_D:
+            self.model_names += ['D']
+            self.netD = networks.define_D(D_output_nc, opt.ndf, which_model_netD=opt.which_model_netD, norm=opt.norm, nl=opt.nl,
+                                          use_sigmoid=use_sigmoid, init_type=opt.init_type, num_Ds=opt.num_Ds, gpu_ids=self.gpu_ids)
+        if use_D2:
+            self.model_names += ['D2']
+            self.netD2 = networks.define_D(D_output_nc, opt.ndf, which_model_netD=opt.which_model_netD2, norm=opt.norm, nl=opt.nl,
+                                           use_sigmoid=use_sigmoid, init_type=opt.init_type, num_Ds=opt.num_Ds, gpu_ids=self.gpu_ids)
+        if use_E:
+            self.model_names += ['E']
+            self.netE = networks.define_E(opt.output_nc, opt.nz, opt.nef, which_model_netE=opt.which_model_netE, norm=opt.norm, nl=opt.nl,
+                                          init_type=opt.init_type, gpu_ids=self.gpu_ids, vaeLike=use_vae)
 
-    def is_skip(self):
-        is_skip = self.opt.isTrain and self.input_A.size(0) < self.opt.batchSize
-        if is_skip:
-            print('skip this point data_size = %d' % self.input_A.size(0))
-        return is_skip
+        if opt.isTrain:
+            self.criterionGAN = networks.GANLoss(mse_loss=not use_sigmoid).to(self.device)
+            self.criterionL1 = torch.nn.L1Loss()
+            self.criterionZ = torch.nn.L1Loss()
+            # initialize optimizers
+            self.schedulers = []
+            self.optimizers = []
+            self.optimizer_G = torch.optim.Adam(self.netG.parameters(), lr=opt.lr, betas=(opt.beta1, 0.999))
+            self.optimizers.append(self.optimizer_G)
+            if use_E:
+                self.optimizer_E = torch.optim.Adam(self.netE.parameters(), lr=opt.lr, betas=(opt.beta1, 0.999))
+                self.optimizers.append(self.optimizer_E)
+
+            if use_D:
+                self.optimizer_D = torch.optim.Adam(self.netD.parameters(), lr=opt.lr, betas=(opt.beta1, 0.999))
+                self.optimizers.append(self.optimizer_D)
+            if use_D2:
+                self.optimizer_D2 = torch.optim.Adam(self.netD2.parameters(), lr=opt.lr, betas=(opt.beta1, 0.999))
+                self.optimizers.append(self.optimizer_D2)
+        self.setup(opt)
+
+    def is_train(self):
+        return self.opt.isTrain and self.real_A.size(0) == self.opt.batchSize
+
+    def set_input(self, input):
+        AtoB = self.opt.which_direction == 'AtoB'
+        self.real_A = input['A' if AtoB else 'B'].to(self.device)
+        self.real_B = input['B' if AtoB else 'A'].to(self.device)
+        self.image_paths = input['A_paths' if AtoB else 'B_paths']
+
+    def get_z_random(self, batchSize, nz, random_type='gauss'):
+        if random_type == 'uni':
+            z = torch.rand(batchSize, nz) * 2.0 - 1.0
+        elif random_type == 'gauss':
+            z = torch.randn(batchSize, nz)
+        return z.to(self.device)
+
+    def encode(self, input_image):
+        mu, logvar = self.netE.forward(input_image)
+        std = logvar.mul(0.5).exp_()
+        eps = self.get_z_random(std.size(0), std.size(1))
+        z = eps.mul(std).add_(mu)
+        return z, mu, logvar
+
+    def test(self, z0=None, encode=False):
+        with torch.no_grad():
+            # import pdb; pdb.set_trace()
+            if encode:  # use encoded z
+                z0, _ = self.netE(self.real_B)
+            if z0 is None:
+                z0 = self.get_z_random(self.real_A.size(0), self.opt.nz)
+            self.fake_B = self.netG(self.real_A, z0)
+            return self.real_A, self.fake_B, self.real_B
 
     def forward(self):
         # get real images
         half_size = self.opt.batchSize // 2
-        self.real_A = Variable(self.input_A)
-        self.real_B = Variable(self.input_B)
         # A1, B1 for encoded; A2, B2 for random
         self.real_A_encoded = self.real_A[0:half_size]
         self.real_B_encoded = self.real_B[0:half_size]
         self.real_B_random = self.real_B[half_size:]
         # get encoded z
-        self.mu, self.logvar = self.netE.forward(self.real_B_encoded)
-        std = self.logvar.mul(0.5).exp_()
-        eps = self.get_z_random(std.size(0), std.size(1), 'gauss')
-        self.z_encoded = eps.mul(std).add_(self.mu)
+        self.z_encoded, self.mu, self.logvar = self.encode(self.real_B_encoded)
         # get random z
-        self.z_random = self.get_z_random(self.real_A_encoded.size(0), self.opt.nz, 'gauss')
+        self.z_random = self.get_z_random(self.real_A_encoded.size(0), self.opt.nz)
         # generate fake_B_encoded
-        self.fake_B_encoded = self.netG.forward(self.real_A_encoded, self.z_encoded)
+        self.fake_B_encoded = self.netG(self.real_A_encoded, self.z_encoded)
         # generate fake_B_random
-        self.fake_B_random = self.netG.forward(self.real_A_encoded, self.z_random)
+        self.fake_B_random = self.netG(self.real_A_encoded, self.z_random)
         if self.opt.conditional_D:   # tedious conditoinal data
             self.fake_data_encoded = torch.cat([self.real_A_encoded, self.fake_B_encoded], 1)
             self.real_data_encoded = torch.cat([self.real_A_encoded, self.real_B_encoded], 1)
@@ -60,21 +122,15 @@ class BiCycleGANModel(BaseModel):
 
         # compute z_predict
         if self.opt.lambda_z > 0.0:
-            self.mu2, logvar2 = self.netE.forward(self.fake_B_random)  # mu2 is a point estimate
-
-    def encode(self, input_data):
-        mu, logvar = self.netE.forward(Variable(input_data, volatile=True))
-        std = logvar.mul(0.5).exp_()
-        eps = self.get_z_random(std.size(0), std.size(1), 'gauss')
-        return eps.mul(std).add_(mu)
+            self.mu2, logvar2 = self.netE(self.fake_B_random)  # mu2 is a point estimate
 
     def backward_D(self, netD, real, fake):
         # Fake, stop backprop to the generator by detaching fake_B
-        pred_fake = netD.forward(fake.detach())
+        pred_fake = netD(fake.detach())
         # real
-        pred_real = netD.forward(real)
-        loss_D_fake, losses_D_fake = self.criterionGAN(pred_fake, False)
-        loss_D_real, losses_D_real = self.criterionGAN(pred_real, True)
+        pred_real = netD(real)
+        loss_D_fake, _ = self.criterionGAN(pred_fake, False)
+        loss_D_real, _ = self.criterionGAN(pred_real, True)
         # Combined loss
         loss_D = loss_D_fake + loss_D_real
         loss_D.backward()
@@ -82,16 +138,15 @@ class BiCycleGANModel(BaseModel):
 
     def backward_G_GAN(self, fake, netD=None, ll=0.0):
         if ll > 0.0:
-            pred_fake = netD.forward(fake)
-            loss_G_GAN, losses_G_GAN = self.criterionGAN(pred_fake, True)
+            pred_fake = netD(fake)
+            loss_G_GAN, _ = self.criterionGAN(pred_fake, True)
         else:
             loss_G_GAN = 0
         return loss_G_GAN * ll
 
     def backward_EG(self):
         # 1, G(A) should fool D
-        self.loss_G_GAN = self.backward_G_GAN(
-            self.fake_data_encoded, self.netD, self.opt.lambda_GAN)
+        self.loss_G_GAN = self.backward_G_GAN(self.fake_data_encoded, self.netD, self.opt.lambda_GAN)
         if self.opt.use_same_D:
             self.loss_G_GAN2 = self.backward_G_GAN(self.fake_data_random, self.netD, self.opt.lambda_GAN2)
         else:
@@ -113,7 +168,6 @@ class BiCycleGANModel(BaseModel):
 
     def update_D(self):
         self.set_requires_grad(self.netD, True)
-        self.forward()
         # update D1
         if self.opt.lambda_GAN > 0.0:
             self.optimizer_D.zero_grad()
@@ -135,7 +189,7 @@ class BiCycleGANModel(BaseModel):
         else:
             self.loss_z_L1 = 0.0
 
-    def update_G(self):
+    def update_G_and_E(self):
         # update G and E
         self.set_requires_grad(self.netD, False)
         self.optimizer_E.zero_grad()
@@ -150,51 +204,7 @@ class BiCycleGANModel(BaseModel):
             self.backward_G_alone()
             self.optimizer_G.step()
 
-    def get_current_errors(self):
-        z1 = self.z_encoded.data.cpu().numpy()
-        if self.opt.lambda_z > 0.0:
-            loss_G = self.loss_G + self.loss_z_L1
-        else:
-            loss_G = self.loss_G
-        ret_dict = OrderedDict([('z_encoded_mag', np.mean(np.abs(z1))),
-                                ('G_total', loss_G.data[0])])
-
-        if self.opt.lambda_L1 > 0.0:
-            G_L1 = self.loss_G_L1.data[0] if self.loss_G_L1 is not None else 0.0
-            ret_dict['G_L1_encoded'] = G_L1
-
-        if self.opt.lambda_z > 0.0:
-            z_L1 = self.loss_z_L1.data[0] if self.loss_z_L1 is not None else 0.0
-            ret_dict['z_L1'] = z_L1
-
-        if self.opt.lambda_kl > 0.0:
-            ret_dict['KL'] = self.loss_kl.data[0]
-
-        if self.opt.lambda_GAN > 0.0:
-            ret_dict['G_GAN'] = self.loss_G_GAN.data[0]
-            ret_dict['D_GAN'] = self.loss_D.data[0]
-
-        if self.opt.lambda_GAN2 > 0.0:
-            ret_dict['G_GAN2'] = self.loss_G_GAN2.data[0]
-            ret_dict['D_GAN2'] = self.loss_D2.data[0]
-        return ret_dict
-
-    def get_current_visuals(self):
-        real_A_encoded = util.tensor2im(self.real_A_encoded.data)
-        real_B_encoded = util.tensor2im(self.real_B_encoded.data)
-        ret_dict = OrderedDict([('real_A_encoded', real_A_encoded), ('real_B_encoded', real_B_encoded)])
-
-        if self.opt.isTrain:
-            fake_random = util.tensor2im(self.fake_B_random.data)
-            fake_encoded = util.tensor2im(self.fake_B_encoded.data)
-            ret_dict['fake_random'] = fake_random
-            ret_dict['fake_encoded'] = fake_encoded
-        return ret_dict
-
-    def save(self, label):
-        self.save_network(self.netG, 'G', label, self.gpu_ids)
-        if self.opt.lambda_GAN > 0.0:
-            self.save_network(self.netD, 'D', label, self.gpu_ids)
-        if self.opt.lambda_GAN2 > 0.0 and not self.opt.use_same_D:
-            self.save_network(self.netD, 'D2', label, self.gpu_ids)
-        self.save_network(self.netE, 'E', label, self.gpu_ids)
+    def optimize_parameters(self):
+        self.forward()
+        self.update_G_and_E()
+        self.update_D()

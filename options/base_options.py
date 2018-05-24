@@ -1,7 +1,7 @@
 import argparse
 import os
 from util import util
-import pickle
+import torch
 
 
 class BaseOptions():
@@ -32,6 +32,7 @@ class BaseOptions():
         self.parser.add_argument('--display_winsize', type=int, default=256, help='display window size')
         self.parser.add_argument('--display_id', type=int, default=1, help='window id of the web display')
         self.parser.add_argument('--display_port', type=int, default=8097, help='visdom display port')
+        self.parser.add_argument('--display_server', type=str, default="http://localhost", help='visdom server of the web display')
         self.parser.add_argument('--use_dropout', action='store_true', help='use dropout for the generator')
         self.parser.add_argument('--max_dataset_size', type=int, default=float("inf"),
                                  help='Maximum number of samples allowed per dataset. If the dataset directory contains more than max_dataset_size, only a subset is loaded.')
@@ -53,43 +54,46 @@ class BaseOptions():
         self.parser.add_argument('--conditional_D', action='store_true', help='if use conditional GAN for D')
         self.parser.add_argument('--init_type', type=str, default='xavier', help='network initialization [normal|xavier|kaiming|orthogonal]')
         self.parser.add_argument('--center_crop', action='store_true', help='if apply for center cropping for the test')
+        self.parser.add_argument('--verbose', action='store_true', help='if specified, print more debugging information')
+        self.parser.add_argument('--suffix', default='', type=str, help='customized suffix: opt.name = opt.name + suffix: e.g., {model}_{which_model_netG}_size{loadSize}')
         # special tasks
         self.initialized = True
 
     def parse(self):
         if not self.initialized:
             self.initialize()
-        self.opt = self.parser.parse_args()
-        self.opt.isTrain = self.isTrain   # train or test
+        opt = self.parser.parse_args()
+        opt.isTrain = self.isTrain   # train or test
 
-        str_ids = self.opt.gpu_ids.split(',')
-        self.opt.gpu_ids = []
+        str_ids = opt.gpu_ids.split(',')
+        opt.gpu_ids = []
         for str_id in str_ids:
             id = int(str_id)
             if id >= 0:
-                self.opt.gpu_ids.append(id)
+                opt.gpu_ids.append(id)
 
-        args = vars(self.opt)
+        # set gpu ids
+        if len(opt.gpu_ids) > 0:
+            torch.cuda.set_device(opt.gpu_ids[0])
+
+        args = vars(opt)
 
         print('------------ Options -------------')
         for k, v in sorted(args.items()):
             print('%s: %s' % (str(k), str(v)))
         print('-------------- End ----------------')
 
-        if self.isTrain:
-            expr_dir = os.path.join(self.opt.checkpoints_dir, self.opt.name)
-            util.mkdirs(expr_dir)
-            pkl_file = os.path.join(expr_dir, 'opt.pkl')
-            pickle.dump(self.opt, open(pkl_file, 'wb'))
-
-            # save to the disk
-            file_name = os.path.join(expr_dir, 'opt_train.txt')
-            with open(file_name, 'wt') as opt_file:
-                opt_file.write('------------ Options -------------\n')
-                for k, v in sorted(args.items()):
-                    opt_file.write('%s: %s\n' % (str(k), str(v)))
-                opt_file.write('-------------- End ----------------\n')
-        else:
-            results_dir = self.opt.results_dir
-            util.mkdirs(results_dir)
+        if opt.suffix:
+            suffix = ('_' + opt.suffix.format(**vars(opt))) if opt.suffix != '' else ''
+            opt.name = opt.name + suffix
+        # save to the disk
+        expr_dir = os.path.join(opt.checkpoints_dir, opt.name)
+        util.mkdirs(expr_dir)
+        file_name = os.path.join(expr_dir, 'opt.txt')
+        with open(file_name, 'wt') as opt_file:
+            opt_file.write('------------ Options -------------\n')
+            for k, v in sorted(args.items()):
+                opt_file.write('%s: %s\n' % (str(k), str(v)))
+            opt_file.write('-------------- End ----------------\n')
+        self.opt = opt
         return self.opt

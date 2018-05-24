@@ -1,7 +1,6 @@
 import os
 import torch
-import util.util as util
-from torch.autograd import Variable
+from collections import OrderedDict
 from . import networks
 
 
@@ -13,212 +12,133 @@ class BaseModel():
         self.opt = opt
         self.gpu_ids = opt.gpu_ids
         self.isTrain = opt.isTrain
-        self.Tensor = torch.cuda.FloatTensor if self.gpu_ids else torch.Tensor
+        self.device = torch.device('cuda:{}'.format(self.gpu_ids[0])) if self.gpu_ids else torch.device('cpu')
         self.save_dir = os.path.join(opt.checkpoints_dir, opt.name)
+        if opt.resize_or_crop != 'scale_width':
+            torch.backends.cudnn.benchmark = True
+        self.loss_names = []
+        self.model_names = []
+        self.visual_names = []
+        self.image_paths = []
 
-    def init_data(self, opt, use_D=True, use_D2=True, use_E=True, use_vae=True):
-        print('---------- Networks initialized -------------')
-        # load/define networks: define G
-        self.netG = networks.define_G(opt.input_nc, opt.output_nc, opt.nz, opt.ngf,
-                                      which_model_netG=opt.which_model_netG,
-                                      norm=opt.norm, nl=opt.nl, use_dropout=opt.use_dropout, init_type=opt.init_type,
-                                      gpu_ids=self.gpu_ids, where_add=self.opt.where_add, upsample=opt.upsample)
-        networks.print_network(self.netG)
-        self.netD, self.netD2, self.netE = None, None, None
-
-        use_sigmoid = opt.gan_mode == 'dcgan'
-        D_output_nc = opt.input_nc + opt.output_nc if self.opt.conditional_D else opt.output_nc
-        # define D
-        if not opt.isTrain:
-            use_D = False
-            use_D2 = False
-
-        if use_D:
-            self.netD = networks.define_D(D_output_nc, opt.ndf,
-                                          which_model_netD=opt.which_model_netD,
-                                          norm=opt.norm, nl=opt.nl,
-                                          use_sigmoid=use_sigmoid, init_type=opt.init_type, num_Ds=opt.num_Ds, gpu_ids=self.gpu_ids)
-            networks.print_network(self.netD)
-        if use_D2:
-            self.netD2 = networks.define_D(D_output_nc, opt.ndf,
-                                           which_model_netD=opt.which_model_netD2,
-                                           norm=opt.norm, nl=opt.nl,
-                                           use_sigmoid=use_sigmoid, init_type=opt.init_type, num_Ds=opt.num_Ds, gpu_ids=self.gpu_ids)
-            networks.print_network(self.netD2)
-
-        # define E
-        if use_E:
-            self.netE = networks.define_E(opt.output_nc, opt.nz, opt.nef,
-                                          which_model_netE=opt.which_model_netE,
-                                          norm=opt.norm, nl=opt.nl,
-                                          init_type=opt.init_type, gpu_ids=self.gpu_ids,
-                                          vaeLike=use_vae)
-            networks.print_network(self.netE)
-
-        if not opt.isTrain:
-            self.load_network_test(self.netG, opt.G_path)
-            if use_E:
-                self.load_network_test(self.netE, opt.E_path)
-
-        if opt.isTrain and opt.continue_train:
-            self.load_network(self.netG, 'G', opt.which_epoch)
-            if use_D:
-                self.load_network(self.netD, 'D', opt.which_epoch)
-            if use_D2:
-                self.load_network(self.netD, 'D2', opt.which_epoch)
-            if use_E:
-                self.load_network(self.netE, 'E', opt.which_epoch)
-        print('-----------------------------------------------')
-
-        # define loss functions
-        self.criterionGAN = networks.GANLoss(
-            mse_loss=not use_sigmoid, tensor=self.Tensor)
-        self.criterionL1 = torch.nn.L1Loss()
-        self.criterionZ = torch.nn.L1Loss()
-
-        if opt.isTrain:
-            # initialize optimizers
-            self.schedulers = []
-            self.optimizers = []
-            self.optimizer_G = torch.optim.Adam(
-                self.netG.parameters(), lr=opt.lr, betas=(opt.beta1, 0.999))
-            self.optimizers.append(self.optimizer_G)
-            if use_E:
-                self.optimizer_E = torch.optim.Adam(
-                    self.netE.parameters(), lr=opt.lr, betas=(opt.beta1, 0.999))
-                self.optimizers.append(self.optimizer_E)
-
-            if use_D:
-                self.optimizer_D = torch.optim.Adam(self.netD.parameters(),
-                                                    lr=opt.lr, betas=(opt.beta1, 0.999))
-                self.optimizers.append(self.optimizer_D)
-            if use_D2:
-                self.optimizer_D2 = torch.optim.Adam(self.netD2.parameters(),
-                                                     lr=opt.lr, betas=(opt.beta1, 0.999))
-                self.optimizers.append(self.optimizer_D2)
-
+    def setup(self, opt):
+        if self.isTrain:
             for optimizer in self.optimizers:
                 self.schedulers.append(networks.get_scheduler(optimizer, opt))
 
-    def is_skip(self):
-        return False
+        if self.isTrain and opt.continue_train:
+            self.load_networks(opt.which_epoch)
+        self.print_networks(opt.verbose)
+
+    def set_input(self, input):
+        self.input = input
 
     def forward(self):
         pass
 
-    def eval(self):
-        pass
+    def is_train(self):
+        return True
 
     def set_requires_grad(self, net, requires_grad=False):
         if net is not None:
             for param in net.parameters():
                 param.requires_grad = requires_grad  # to avoid computation
 
-    def balance(self):
-        pass
+    # used in test time, wrapping `forward` in no_grad() so we don't save
+    # intermediate steps for backprop
+    def test(self):
+        with torch.no_grad():
+            self.forward()
 
-    def update_D(self, data):
-        pass
-
-    def update_G(self):
-        pass
-
-    def get_current_visuals(self):
-        return self.input
-
-    def get_current_errors(self):
-        return {}
-
-    def save(self, label):
-        pass
-
-    # helper saving function that can be used by subclasses
-    def save_network(self, network, network_label, epoch_label, gpu_ids):
-        save_filename = '%s_net_%s.pth' % (epoch_label, network_label)
-        save_path = os.path.join(self.save_dir, save_filename)
-        torch.save(network.cpu().state_dict(), save_path)
-        if len(gpu_ids) and torch.cuda.is_available():
-            network.cuda(gpu_ids[0])
-
-    # helper loading function that can be used by subclasses
-    def load_network(self, network, network_label, epoch_label):
-        save_filename = '%s_net_%s.pth' % (epoch_label, network_label)
-        save_path = os.path.join(self.save_dir, save_filename)
-        network.load_state_dict(torch.load(save_path))
-
-    def load_network_test(self, network, network_path):
-        network.load_state_dict(torch.load(network_path))
-
-    def update_learning_rate(self):
-        loss = self.get_measurement()
-        for scheduler in self.schedulers:
-            scheduler.step(loss)
-        lr = self.optimizers[0].param_groups[0]['lr']
-        print('learning rate = %.7f' % lr)
-
-    def get_measurement(self):
-        return None
-
-    def get_z_random(self, batchSize, nz, random_type='gauss'):
-        z = self.Tensor(batchSize, nz)
-        if random_type == 'uni':
-            z.copy_(torch.rand(batchSize, nz) * 2.0 - 1.0)
-        elif random_type == 'gauss':
-            z.copy_(torch.randn(batchSize, nz))
-        z = Variable(z)
-        return z
-
-    # testing models
-    def set_input(self, input):
-        # get direciton
-        AtoB = self.opt.which_direction == 'AtoB'
-        # set input images
-        input_A = input['A' if AtoB else 'B']
-        input_B = input['B' if AtoB else 'A']
-        if len(self.gpu_ids) > 0:
-            input_A = input_A.cuda(self.gpu_ids[0], async=True)
-            input_B = input_B.cuda(self.gpu_ids[0], async=True)
-        self.input_A = input_A
-        self.input_B = input_B
-        # get image paths
-        self.image_paths = input['A_paths' if AtoB else 'B_paths']
-
+    # get image paths
     def get_image_paths(self):
         return self.image_paths
 
-    def test(self, z_sample):  # need to have input set already
-        self.real_A = Variable(self.input_A, volatile=True)
-        batchSize = self.input_A.size(0)
-        z = self.Tensor(batchSize, self.opt.nz)
-        z_torch = torch.from_numpy(z_sample)
-        z.copy_(z_torch)
-        # st()
-        self.z = Variable(z, volatile=True)
-        self.fake_B = self.netG.forward(self.real_A, self.z)
-        self.real_B = Variable(self.input_B, volatile=True)
+    def optimize_parameters(self):
+        pass
 
-    def encode(self, input_data):
-        return self.netE.forward(Variable(input_data, volatile=True))
+    # update learning rate (called once every epoch)
+    def update_learning_rate(self):
+        for scheduler in self.schedulers:
+            scheduler.step()
+        lr = self.optimizers[0].param_groups[0]['lr']
+        print('learning rate = %.7f' % lr)
 
-    def encode_real_B(self):
-        self.z_encoded = self.encode(self.input_B)
-        return util.tensor2vec(self.z_encoded)
+    # return visualization images. train.py will display these images, and save the images to a html
+    def get_current_visuals(self):
+        visual_ret = OrderedDict()
+        for name in self.visual_names:
+            if isinstance(name, str):
+                visual_ret[name] = getattr(self, name)
+        return visual_ret
 
-    def real_data(self, input=None):
-        if input is not None:
-            self.set_input(input)
-        return util.tensor2im(self.input_A), util.tensor2im(self.input_B)
+    # return traning losses/errors. train.py will print out these errors as debugging information
+    def get_current_losses(self):
+        errors_ret = OrderedDict()
+        for name in self.loss_names:
+            if isinstance(name, str):
+                # float(...) works for both scalar tensor and float number
+                errors_ret[name] = float(getattr(self, 'loss_' + name))
+        return errors_ret
 
-    def test_simple(self, z_sample, input=None, encode_real_B=False):
-        if input is not None:
-            self.set_input(input)
+    # make models eval mode during test time
+    def eval(self):
+        for name in self.model_names:
+            if isinstance(name, str):
+                net = getattr(self, 'net' + name)
+                net.eval()
 
-        if encode_real_B:  # use encoded z
-            z_sample = self.encode_real_B()
+    # save models to the disk
+    def save_networks(self, which_epoch):
+        for name in self.model_names:
+            if isinstance(name, str):
+                save_filename = '%s_net_%s.pth' % (which_epoch, name)
+                save_path = os.path.join(self.save_dir, save_filename)
+                net = getattr(self, 'net' + name)
 
-        self.test(z_sample)
+                if len(self.gpu_ids) > 0 and torch.cuda.is_available():
+                    torch.save(net.module.cpu().state_dict(), save_path)
+                    net.cuda(self.gpu_ids[0])
+                else:
+                    torch.save(net.cpu().state_dict(), save_path)
 
-        real_A = util.tensor2im(self.real_A.data)
-        fake_B = util.tensor2im(self.fake_B.data)
-        real_B = util.tensor2im(self.real_B.data)
-        return self.image_paths, real_A, fake_B, real_B, z_sample
+    def __patch_instance_norm_state_dict(self, state_dict, module, keys, i=0):
+        key = keys[i]
+        if i + 1 == len(keys):  # at the end, pointing to a parameter/buffer
+            if module.__class__.__name__.startswith('InstanceNorm') and \
+                    (key == 'running_mean' or key == 'running_var'):
+                if getattr(module, key) is None:
+                    state_dict.pop('.'.join(keys))
+        else:
+            self.__patch_instance_norm_state_dict(state_dict, getattr(module, key), keys, i + 1)
+
+    # load models from the disk
+    def load_networks(self, which_epoch):
+        for name in self.model_names:
+            if isinstance(name, str):
+                save_filename = '%s_net_%s.pth' % (which_epoch, name)
+                save_path = os.path.join(self.save_dir, save_filename)
+                net = getattr(self, 'net' + name)
+                if isinstance(net, torch.nn.DataParallel):
+                    net = net.module
+                # if you are using PyTorch newer than 0.4 (e.g., built from
+                # GitHub source), you can remove str() on self.device
+                state_dict = torch.load(save_path, map_location=str(self.device))
+                # patch InstanceNorm checkpoints prior to 0.4
+                for key in list(state_dict.keys()):  # need to copy keys here because we mutate in loop
+                    self.__patch_instance_norm_state_dict(state_dict, net, key.split('.'))
+                net.load_state_dict(state_dict)
+
+    # print network information
+    def print_networks(self, verbose):
+        print('---------- Networks initialized -------------')
+        for name in self.model_names:
+            if isinstance(name, str):
+                net = getattr(self, 'net' + name)
+                num_params = 0
+                for param in net.parameters():
+                    num_params += param.numel()
+                if verbose:
+                    print(net)
+                print('[Network %s] Total number of parameters : %.3f M' % (name, num_params / 1e6))
+        print('-----------------------------------------------')
