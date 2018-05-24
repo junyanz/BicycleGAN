@@ -1,3 +1,4 @@
+set -ex
 # models
 RESULTS_DIR='./results/edges2handbags'
 G_PATH='./pretrained_models/edges2handbags_net_G.pth'

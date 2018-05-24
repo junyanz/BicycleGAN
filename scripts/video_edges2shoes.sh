@@ -1,3 +1,4 @@
+set -ex
 # models
 RESULTS_DIR='./videos/edges2shoes'
 G_PATH='./pretrained_models/edges2shoes_net_G.pth'

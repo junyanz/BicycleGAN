@@ -1,3 +1,4 @@
+set -ex
 # models
 RESULTS_DIR='./results/facades'
 G_PATH='./pretrained_models/facades_label2image_net_G.pth'

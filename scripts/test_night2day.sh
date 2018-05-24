@@ -1,3 +1,4 @@
+set -ex
 # models
 RESULTS_DIR='./results/night2day'
 G_PATH='./pretrained_models/night2day_net_G.pth'

@@ -1,3 +1,4 @@
+set -ex
 # models
 RESULTS_DIR='./results/maps'
 G_PATH='./pretrained_models/map2aerial_net_G.pth'

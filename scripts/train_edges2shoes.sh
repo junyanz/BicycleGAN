@@ -1,3 +1,4 @@
+set -ex
 MODEL='bicycle_gan'
 # dataset details
 CLASS='edges2shoes'  # facades, day2night, edges2shoes, edges2handbags, maps
