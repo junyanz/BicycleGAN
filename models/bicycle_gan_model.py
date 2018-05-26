@@ -45,7 +45,6 @@ class BiCycleGANModel(BaseModel):
             self.criterionL1 = torch.nn.L1Loss()
             self.criterionZ = torch.nn.L1Loss()
             # initialize optimizers
-            self.schedulers = []
             self.optimizers = []
             self.optimizer_G = torch.optim.Adam(self.netG.parameters(), lr=opt.lr, betas=(opt.beta1, 0.999))
             self.optimizers.append(self.optimizer_G)
@@ -59,7 +58,6 @@ class BiCycleGANModel(BaseModel):
             if use_D2:
                 self.optimizer_D2 = torch.optim.Adam(self.netD2.parameters(), lr=opt.lr, betas=(opt.beta1, 0.999))
                 self.optimizers.append(self.optimizer_D2)
-        self.setup(opt)
 
     def is_train(self):
         return self.opt.isTrain and self.real_A.size(0) == self.opt.batchSize

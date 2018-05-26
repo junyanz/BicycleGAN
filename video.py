@@ -27,6 +27,7 @@ opt.no_encode = True  # do not use encoder
 data_loader = CreateDataLoader(opt)
 dataset = data_loader.load_data()
 model = create_model(opt)
+model.setup(opt)
 model.eval()
 interp_mode = 'slerp'
 use_vertical = 1 if opt.align_mode == 'vertical' else 0

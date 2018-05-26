@@ -21,7 +21,7 @@ class BaseOptions():
         self.parser.add_argument('--ngf', type=int, default=64, help='# of gen filters in first conv layer')
         self.parser.add_argument('--ndf', type=int, default=64, help='# of discrim filters in first conv layer')
         self.parser.add_argument('--gpu_ids', type=str, default='0', help='gpu ids: e.g. 0  0,1,2, 0,2, -1 for CPU mode')
-        self.parser.add_argument('--name', type=str, default='experiment_name', help='name of the experiment. It decides where to store samples and models')
+        self.parser.add_argument('--name', type=str, default='', help='name of the experiment. It decides where to store samples and models')
         self.parser.add_argument('--resize_or_crop', type=str, default='resize_and_crop', help='not implemented')
         self.parser.add_argument('--dataset_mode', type=str, default='aligned', help='aligned,single')
         self.parser.add_argument('--model', type=str, default='bicycle_gan', help='chooses which model to use. bicycle,, ...')

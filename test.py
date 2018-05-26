@@ -17,6 +17,7 @@ opt.serial_batches = True  # no shuffle
 data_loader = CreateDataLoader(opt)
 dataset = data_loader.load_data()
 model = create_model(opt)
+model.setup(opt)
 model.eval()
 print('Loading model %s' % opt.model)
 

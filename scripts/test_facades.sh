@@ -1,8 +1,6 @@
 set -ex
 # models
 RESULTS_DIR='./results/facades'
-G_PATH='./pretrained_models/facades_label2image_net_G.pth'
-E_PATH='./pretrained_models/facades_label2image_net_E.pth'
 
 # dataset
 CLASS='facades'
@@ -21,8 +19,8 @@ NUM_SAMPLES=10 # number of samples per input images
 CUDA_VISIBLE_DEVICES=${GPU_ID} python ./test.py \
   --dataroot ./datasets/${CLASS} \
   --results_dir ${RESULTS_DIR} \
-  --G_path ${G_PATH} \
-  --E_path ${E_PATH} \
+  --checkpoints_dir ./pretrained_models/ \
+  --name ${CLASS} \
   --which_direction ${DIRECTION} \
   --loadSize ${FINE_SIZE} --fineSize ${FINE_SIZE} \
   --input_nc ${INPUT_NC} \

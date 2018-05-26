@@ -23,10 +23,9 @@ class BaseModel():
 
     def setup(self, opt):
         if self.isTrain:
-            for optimizer in self.optimizers:
-                self.schedulers.append(networks.get_scheduler(optimizer, opt))
+            self.schedulers = [networks.get_scheduler(optimizer, opt) for optimizer in self.optimizers]
 
-        if self.isTrain and opt.continue_train:
+        if not self.isTrain or opt.continue_train:
             self.load_networks(opt.which_epoch)
         self.print_networks(opt.verbose)
 
@@ -123,6 +122,7 @@ class BaseModel():
                     net = net.module
                 # if you are using PyTorch newer than 0.4 (e.g., built from
                 # GitHub source), you can remove str() on self.device
+                print('loading a model from %s' % save_path)
                 state_dict = torch.load(save_path, map_location=str(self.device))
                 # patch InstanceNorm checkpoints prior to 0.4
                 for key in list(state_dict.keys()):  # need to copy keys here because we mutate in loop

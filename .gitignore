@@ -6,6 +6,7 @@ debug*
 datasets/
 videos/
 checkpoints/
+pretrained_models/
 results/
 build/
 dist/

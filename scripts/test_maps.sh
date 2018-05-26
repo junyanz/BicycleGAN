@@ -23,8 +23,6 @@ NUM_SAMPLES=10 # number of samples per input images
 CUDA_VISIBLE_DEVICES=${GPU_ID} python ./test.py \
   --dataroot ./datasets/${CLASS} \
   --results_dir ${RESULTS_DIR} \
-  --G_path ${G_PATH} \
-  --E_path ${E_PATH} \
   --which_direction ${DIRECTION} \
   --loadSize ${FINE_SIZE} --fineSize ${FINE_SIZE} \
   --input_nc ${INPUT_NC} \
