@@ -63,7 +63,6 @@ def interp_z(z0, z1, num_frames, interp_mode='linear'):
         zs = np.concatenate(zs, axis=0).astype(np.float32)
 
     if interp_mode == 'slerp':
-        # st()
         z0_n = z0 / (np.linalg.norm(z0) + 1e-10)
         z1_n = z1 / (np.linalg.norm(z1) + 1e-10)
         omega = np.arccos(np.dot(z0_n, z1_n))
@@ -73,8 +72,7 @@ def interp_z(z0, z1, num_frames, interp_mode='linear'):
         else:
             for n in range(num_frames):
                 ratio = n / float(num_frames - 1)
-                z_t = np.sin((1 - ratio) * omega) / sin_omega * \
-                    z0 + np.sin(ratio * omega) / sin_omega * z1
+                z_t = np.sin((1 - ratio) * omega) / sin_omega * z0 + np.sin(ratio * omega) / sin_omega * z1
                 zs.append(z_t[np.newaxis, :])
         zs = np.concatenate(zs, axis=0).astype(np.float32)
 

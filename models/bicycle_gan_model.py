@@ -84,7 +84,6 @@ class BiCycleGANModel(BaseModel):
 
     def test(self, z0=None, encode=False):
         with torch.no_grad():
-            # import pdb; pdb.set_trace()
             if encode:  # use encoded z
                 z0, _ = self.netE(self.real_B)
             if z0 is None:

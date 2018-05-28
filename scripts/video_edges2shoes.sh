@@ -19,7 +19,8 @@ NUM_SAMPLES=20 # number of samples per input images
 CUDA_VISIBLE_DEVICES=${GPU_ID} python ./video.py \
   --dataroot ./datasets/${CLASS} \
   --results_dir ${RESULTS_DIR} \
-  --G_path ${G_PATH} \
+  --checkpoints_dir ./pretrained_models/ \
+  --name ${CLASS} \
   --which_direction ${DIRECTION} \
   --loadSize ${FINE_SIZE} --fineSize ${FINE_SIZE} \
   --input_nc ${INPUT_NC} \

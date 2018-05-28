@@ -1,6 +1,6 @@
 FILE=$1
 
-echo "Note: available models are edges2shoes, edges2handbags, night2day, map2aerial, and facades"
+echo "Note: available models are edges2shoes, edges2handbags, night2day, maps, and facades"
 echo "downloading [$FILE]"
 MODEL_DIR=./pretrained_models/${FILE}
 mkdir -p ${MODEL_DIR}

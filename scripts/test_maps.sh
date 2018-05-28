@@ -23,8 +23,11 @@ NUM_SAMPLES=10 # number of samples per input images
 CUDA_VISIBLE_DEVICES=${GPU_ID} python ./test.py \
   --dataroot ./datasets/${CLASS} \
   --results_dir ${RESULTS_DIR} \
+  --checkpoints_dir ./pretrained_models/ \
+  --name ${CLASS} \
   --which_direction ${DIRECTION} \
-  --loadSize ${FINE_SIZE} --fineSize ${FINE_SIZE} \
+  --loadSize ${FINE_SIZE} \
+  --fineSize ${FINE_SIZE} \
   --input_nc ${INPUT_NC} \
   --how_many ${HOW_MANY} \
   --n_samples ${NUM_SAMPLES} \

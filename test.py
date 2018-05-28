@@ -23,7 +23,7 @@ print('Loading model %s' % opt.model)
 
 # create website
 web_dir = os.path.join(opt.results_dir, opt.phase + '_sync' if opt.sync else opt.phase)
-webpage = html.HTML(web_dir, 'Training = %s, Phase = %s, G = %s, E = %s' % (opt.name, opt.phase, opt.G_path, opt.E_path))
+webpage = html.HTML(web_dir, 'Training = %s, Phase = %s, Class =%s' % (opt.name, opt.phase, opt.name))
 
 # sample random z
 if opt.sync:

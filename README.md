@@ -128,15 +128,15 @@ bash ./pretrained_models/download_model.sh night2day
 bash ./datasets/download_testset.sh night2day
 bash ./scripts/test_night2day.sh
 ```
-- `facades_label2image` (facade label -> facade photo) trained on the CMP Facades dataset.
+- `facades` (facade label -> facade photo) trained on the CMP Facades dataset.
 ```bash
-bash ./pretrained_models/download_model.sh facades_label2image
+bash ./pretrained_models/download_model.sh facades
 bash ./datasets/download_testset.sh facades
 bash ./scripts/test_facades.sh
 ```
-- `map2aerial` (map photo -> aerial photo) trained on 1096 training images scraped from Google Maps.
+- `maps` (map photo -> aerial photo) trained on 1096 training images scraped from Google Maps.
 ```bash
-bash ./pretrained_models/download_model.sh map2aerial
+bash ./pretrained_models/download_model.sh maps
 bash ./datasets/download_testset.sh maps
 bash ./scripts/test_maps.sh
 ```

@@ -708,8 +708,7 @@ class UnetBlock_with_z(nn.Module):
     def forward(self, x, z):
         # print(x.size())
         if self.nz > 0:
-            z_img = z.view(z.size(0), z.size(1), 1, 1).expand(
-                z.size(0), z.size(1), x.size(2), x.size(3))
+            z_img = z.view(z.size(0), z.size(1), 1, 1).expand(z.size(0), z.size(1), x.size(2), x.size(3))
             x_and_z = torch.cat([x, z_img], 1)
         else:
             x_and_z = x

@@ -6,6 +6,7 @@ from util import util
 import numpy as np
 import moviepy.editor
 import os
+import torch
 
 
 def get_random_z(opt):
@@ -45,7 +46,7 @@ frame_rows = [[] for n in range(total_frames)]
 for i, data in enumerate(islice(dataset, opt.how_many)):
     print('process input image %3.3d/%3.3d' % (i, opt.how_many))
     model.set_input(data)
-    real_A, real_B = model.real_data()
+    real_A = util.tensor2im(model.real_A)
     wb = opt.border
     hb = opt.border
     h = real_A.shape[0]
@@ -58,9 +59,10 @@ for i, data in enumerate(islice(dataset, opt.how_many)):
         z0 = z_samples[n]
         z1 = z_samples[n + 1]
         zs = util.interp_z(z0, z1, num_frames=opt.num_frames, interp_mode=interp_mode)
-
         for k in range(opt.num_frames):
-            _, _, fake_B, _, _ = model.test(zs[k], encode=False)
+            zs_k = (torch.Tensor(zs[[k]])).to(model.device)
+            _, fake_B_device, _ = model.test(zs_k, encode=False)
+            fake_B = util.tensor2im(fake_B_device)
             fake_B_b = np.full((h + hb, w + wb, opt.output_nc), 255, fake_B.dtype)
             fake_B_b[hb:, wb:, :] = fake_B
             frames[k + opt.num_frames * n].append(fake_B_b)
