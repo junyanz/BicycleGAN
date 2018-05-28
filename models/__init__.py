@@ -5,6 +5,9 @@ def create_model(opt):
     if opt.model == 'bicycle_gan':
         from .bicycle_gan_model import BiCycleGANModel
         model = BiCycleGANModel()
+    if opt.model == 'bicycle_gan_simple':
+        from .bicycle_gan_simple_model import BiCycleGANSimpleModel
+        model = BiCycleGANSimpleModel()
     elif opt.model == 'pix2pix':
         from .pix2pix_model import Pix2PixModel
         model = Pix2PixModel()

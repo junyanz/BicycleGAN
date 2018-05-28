@@ -142,3 +142,19 @@ class BaseModel():
                     print(net)
                 print('[Network %s] Total number of parameters : %.3f M' % (name, num_params / 1e6))
         print('-----------------------------------------------')
+
+    # get a random code/vector
+    def get_z_random(self, batchSize, nz, random_type='gauss'):
+        if random_type == 'uni':
+            z = torch.rand(batchSize, nz) * 2.0 - 1.0
+        elif random_type == 'gauss':
+            z = torch.randn(batchSize, nz)
+        return z.to(self.device)
+
+    # encode an image into a code
+    def encode(self, netE, input_image):
+        mu, logvar = netE.forward(input_image)
+        std = logvar.mul(0.5).exp_()
+        eps = self.get_z_random(std.size(0), std.size(1))
+        z = eps.mul(std).add_(mu)
+        return z, mu, logvar
