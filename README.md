@@ -3,12 +3,12 @@
 <br><br><br><br>
 
 # BicycleGAN
-[[Project Page]](https://junyanz.github.io/BicycleGAN/) [[Paper]](https://arxiv.org/abs/1711.11586) [[Demo Video]](https://youtu.be/JvGysD2EFhw)
+[Project Page](https://junyanz.github.io/BicycleGAN/) |  [Paper](https://arxiv.org/abs/1711.11586) | [Video](https://youtu.be/JvGysD2EFhw)
 
 
 Pytorch implementation for multimodal image-to-image translation. For example,  given the same night image, our model is able to synthesize possible day images with different types of lighting, sky and clouds. The training requires paired data.
 
-**Note**: The current software works well with PyTorch 0.4. Check out the older [branch](https://github.com/junyanz/BicycleGAN/tree/pytorch0.3.1) that supports PyTorch 0.1-0.3.
+**Note**: The current software works well with PyTorch 0.4+. Check out the older [branch](https://github.com/junyanz/BicycleGAN/tree/pytorch0.3.1) that supports PyTorch 0.1-0.3.
 
 <img src='imgs/teaser.jpg' width=850>  
 
@@ -147,12 +147,13 @@ bash ./scripts/test_maps.sh
 If you find this useful for your research, please use the following.
 
 ```
-@incollection{zhu2017multimodal,
-	title = {Toward Multimodal Image-to-Image Translation},
-	author = {Zhu, Jun-Yan and Zhang, Richard and Pathak, Deepak and Darrell, Trevor and Efros, Alexei A and Wang, Oliver and Shechtman, Eli},
-	booktitle = {Advances in Neural Information Processing Systems 30},
-	year = {2017},
+@inproceedings{zhu2017toward,
+  title={Toward multimodal image-to-image translation},
+  author={Zhu, Jun-Yan and Zhang, Richard and Pathak, Deepak and Darrell, Trevor and Efros, Alexei A and Wang, Oliver and Shechtman, Eli},
+  booktitle={Advances in Neural Information Processing Systems},
+  year={2017}
 }
+
 ```
 
 ### Acknowledgements
