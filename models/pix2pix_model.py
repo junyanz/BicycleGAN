@@ -7,6 +7,16 @@ class Pix2PixModel(BaseModel):
     def name(self):
         return 'Pix2PixModel'
 
+    @staticmethod
+    def modify_commandline_options(parser, is_train=True):
+        # changing the default values to match the pix2pix paper
+        # (https://phillipi.github.io/pix2pix/)
+        parser.set_defaults(pool_size=0, no_lsgan=True, norm='batch')
+        parser.set_defaults(dataset_mode='aligned')
+        parser.set_defaults(netG='unet_256')
+        parser.set_defaults(lambda_l1=100.0)
+        return parser
+
     def initialize(self, opt):
         BaseModel.initialize(self, opt)
         self.isTrain = opt.isTrain
@@ -20,16 +30,14 @@ class Pix2PixModel(BaseModel):
         else:  # during test time, only load Gs
             self.model_names = ['G']
         # load/define networks
-        self.netG = networks.define_G(opt.input_nc, opt.output_nc, 0, opt.ngf, which_model_netG=opt.which_model_netG,
+        self.netG = networks.define_G(opt.input_nc, opt.output_nc, 0, opt.ngf, netG=opt.netG,
                                       norm=opt.norm, nl=opt.nl, use_dropout=opt.use_dropout, init_type=opt.init_type,
                                       gpu_ids=self.gpu_ids, where_add=self.opt.where_add, upsample=opt.upsample)
 
         if self.isTrain:
             use_sigmoid = opt.gan_mode == 'dcgan'
-            self.netD = networks.define_D(opt.input_nc + opt.output_nc, opt.ndf,
-                                          which_model_netD=opt.which_model_netD,
-                                          norm=opt.norm, nl=opt.nl,
-                                          use_sigmoid=use_sigmoid, init_type=opt.init_type, num_Ds=opt.num_Ds, gpu_ids=self.gpu_ids)
+            self.netD = networks.define_D(opt.input_nc + opt.output_nc, opt.ndf, netD=opt.netD,
+                                          norm=opt.norm, nl=opt.nl, use_sigmoid=use_sigmoid, init_type=opt.init_type, num_Ds=opt.num_Ds, gpu_ids=self.gpu_ids)
 
         if self.isTrain:
             # define loss functions
@@ -38,10 +46,8 @@ class Pix2PixModel(BaseModel):
 
             # initialize optimizers
             self.optimizers = []
-            self.optimizer_G = torch.optim.Adam(self.netG.parameters(),
-                                                lr=opt.lr, betas=(opt.beta1, 0.999))
-            self.optimizer_D = torch.optim.Adam(self.netD.parameters(),
-                                                lr=opt.lr, betas=(opt.beta1, 0.999))
+            self.optimizer_G = torch.optim.Adam(self.netG.parameters(), lr=opt.lr, betas=(opt.beta1, 0.999))
+            self.optimizer_D = torch.optim.Adam(self.netD.parameters(), lr=opt.lr, betas=(opt.beta1, 0.999))
             self.optimizers.append(self.optimizer_G)
             self.optimizers.append(self.optimizer_D)
 

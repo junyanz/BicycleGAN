@@ -7,9 +7,13 @@ class BiCycleGANModel(BaseModel):
     def name(self):
         return 'BiCycleGANModel'
 
+    @staticmethod
+    def modify_commandline_options(parser, is_train=True):
+        return parser
+
     def initialize(self, opt):
         if opt.isTrain:
-            assert opt.batchSize % 2 == 0  # load two images at one time.
+            assert opt.batch_size % 2 == 0  # load two images at one time.
 
         BaseModel.initialize(self, opt)
         # specify the training losses you want to print out. The program will call base_model.get_current_losses
@@ -22,22 +26,22 @@ class BiCycleGANModel(BaseModel):
         use_E = opt.isTrain or not opt.no_encode
         use_vae = True
         self.model_names = ['G']
-        self.netG = networks.define_G(opt.input_nc, opt.output_nc, opt.nz, opt.ngf, which_model_netG=opt.which_model_netG,
+        self.netG = networks.define_G(opt.input_nc, opt.output_nc, opt.nz, opt.ngf, netG=opt.netG,
                                       norm=opt.norm, nl=opt.nl, use_dropout=opt.use_dropout, init_type=opt.init_type,
                                       gpu_ids=self.gpu_ids, where_add=self.opt.where_add, upsample=opt.upsample)
         D_output_nc = opt.input_nc + opt.output_nc if opt.conditional_D else opt.output_nc
         use_sigmoid = opt.gan_mode == 'dcgan'
         if use_D:
             self.model_names += ['D']
-            self.netD = networks.define_D(D_output_nc, opt.ndf, which_model_netD=opt.which_model_netD, norm=opt.norm, nl=opt.nl,
+            self.netD = networks.define_D(D_output_nc, opt.ndf, netD=opt.netD, norm=opt.norm, nl=opt.nl,
                                           use_sigmoid=use_sigmoid, init_type=opt.init_type, num_Ds=opt.num_Ds, gpu_ids=self.gpu_ids)
         if use_D2:
             self.model_names += ['D2']
-            self.netD2 = networks.define_D(D_output_nc, opt.ndf, which_model_netD=opt.which_model_netD2, norm=opt.norm, nl=opt.nl,
+            self.netD2 = networks.define_D(D_output_nc, opt.ndf, netD=opt.netD2, norm=opt.norm, nl=opt.nl,
                                            use_sigmoid=use_sigmoid, init_type=opt.init_type, num_Ds=opt.num_Ds, gpu_ids=self.gpu_ids)
         if use_E:
             self.model_names += ['E']
-            self.netE = networks.define_E(opt.output_nc, opt.nz, opt.nef, which_model_netE=opt.which_model_netE, norm=opt.norm, nl=opt.nl,
+            self.netE = networks.define_E(opt.output_nc, opt.nz, opt.nef, netE=opt.netE, norm=opt.norm, nl=opt.nl,
                                           init_type=opt.init_type, gpu_ids=self.gpu_ids, vaeLike=use_vae)
 
         if opt.isTrain:
@@ -60,7 +64,7 @@ class BiCycleGANModel(BaseModel):
                 self.optimizers.append(self.optimizer_D2)
 
     def is_train(self):
-        return self.opt.isTrain and self.real_A.size(0) == self.opt.batchSize
+        return self.opt.isTrain and self.real_A.size(0) == self.opt.batch_size
 
     def set_input(self, input):
         AtoB = self.opt.which_direction == 'AtoB'
@@ -68,11 +72,11 @@ class BiCycleGANModel(BaseModel):
         self.real_B = input['B' if AtoB else 'A'].to(self.device)
         self.image_paths = input['A_paths' if AtoB else 'B_paths']
 
-    def get_z_random(self, batchSize, nz, random_type='gauss'):
+    def get_z_random(self, batch_size, nz, random_type='gauss'):
         if random_type == 'uni':
-            z = torch.rand(batchSize, nz) * 2.0 - 1.0
+            z = torch.rand(batch_size, nz) * 2.0 - 1.0
         elif random_type == 'gauss':
-            z = torch.randn(batchSize, nz)
+            z = torch.randn(batch_size, nz)
         return z.to(self.device)
 
     def encode(self, input_image):
@@ -93,7 +97,8 @@ class BiCycleGANModel(BaseModel):
 
     def forward(self):
         # get real images
-        half_size = self.opt.batchSize // 2
+        half_size = self.opt.batch_size // 2
+        import pdb; pdb.set_trace()
         # A1, B1 for encoded; A2, B2 for random
         self.real_A_encoded = self.real_A[0:half_size]
         self.real_B_encoded = self.real_B[0:half_size]
@@ -136,6 +141,7 @@ class BiCycleGANModel(BaseModel):
     def backward_G_GAN(self, fake, netD=None, ll=0.0):
         if ll > 0.0:
             pred_fake = netD(fake)
+            import pdb; pdb.set_trace()
             loss_G_GAN, _ = self.criterionGAN(pred_fake, True)
         else:
             loss_G_GAN = 0
@@ -147,6 +153,7 @@ class BiCycleGANModel(BaseModel):
         if self.opt.use_same_D:
             self.loss_G_GAN2 = self.backward_G_GAN(self.fake_data_random, self.netD, self.opt.lambda_GAN2)
         else:
+            import pdb; pdb.set_trace()
             self.loss_G_GAN2 = self.backward_G_GAN(self.fake_data_random, self.netD2, self.opt.lambda_GAN2)
         # 2. KL loss
         if self.opt.lambda_kl > 0.0:

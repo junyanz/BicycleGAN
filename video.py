@@ -21,8 +21,8 @@ def produce_frame(t):
 
 # hard-code opt
 opt = VideoOptions().parse()
-opt.nThreads = 1   # test code only supports nThreads=1
-opt.batchSize = 1   # test code only supports batchSize=1
+opt.num_threads = 1   # test code only supports num_threads=1
+opt.batch_size = 1   # test code only supports batch_size=1
 opt.no_encode = True  # do not use encoder
 
 data_loader = CreateDataLoader(opt)

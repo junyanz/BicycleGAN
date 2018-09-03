@@ -87,84 +87,81 @@ def get_non_linearity(layer_type='relu'):
 
 
 def define_G(input_nc, output_nc, nz, ngf,
-             which_model_netG='unet_128', norm='batch', nl='relu',
+             netG='unet_128', norm='batch', nl='relu',
              use_dropout=False, init_type='xavier', gpu_ids=[], where_add='input', upsample='bilinear'):
-    netG = None
+    net = None
     norm_layer = get_norm_layer(layer_type=norm)
     nl_layer = get_non_linearity(layer_type=nl)
 
     if nz == 0:
         where_add = 'input'
 
-    if which_model_netG == 'unet_128' and where_add == 'input':
-        netG = G_Unet_add_input(input_nc, output_nc, nz, 7, ngf, norm_layer=norm_layer, nl_layer=nl_layer,
-                                use_dropout=use_dropout, gpu_ids=gpu_ids, upsample=upsample)
-    elif which_model_netG == 'unet_256' and where_add == 'input':
-        netG = G_Unet_add_input(input_nc, output_nc, nz, 8, ngf, norm_layer=norm_layer, nl_layer=nl_layer,
-                                use_dropout=use_dropout, gpu_ids=gpu_ids, upsample=upsample)
-    elif which_model_netG == 'unet_128' and where_add == 'all':
-        netG = G_Unet_add_all(input_nc, output_nc, nz, 7, ngf, norm_layer=norm_layer, nl_layer=nl_layer,
-                              use_dropout=use_dropout, gpu_ids=gpu_ids, upsample=upsample)
-    elif which_model_netG == 'unet_256' and where_add == 'all':
-        netG = G_Unet_add_all(input_nc, output_nc, nz, 8, ngf, norm_layer=norm_layer, nl_layer=nl_layer,
-                              use_dropout=use_dropout, gpu_ids=gpu_ids, upsample=upsample)
+    if netG == 'unet_128' and where_add == 'input':
+        net = G_Unet_add_input(input_nc, output_nc, nz, 7, ngf, norm_layer=norm_layer, nl_layer=nl_layer,
+                               use_dropout=use_dropout, upsample=upsample)
+    elif netG == 'unet_256' and where_add == 'input':
+        net = G_Unet_add_input(input_nc, output_nc, nz, 8, ngf, norm_layer=norm_layer, nl_layer=nl_layer,
+                               use_dropout=use_dropout, upsample=upsample)
+    elif netG == 'unet_128' and where_add == 'all':
+        net = G_Unet_add_all(input_nc, output_nc, nz, 7, ngf, norm_layer=norm_layer, nl_layer=nl_layer,
+                             use_dropout=use_dropout, upsample=upsample)
+    elif netG == 'unet_256' and where_add == 'all':
+        net = G_Unet_add_all(input_nc, output_nc, nz, 8, ngf, norm_layer=norm_layer, nl_layer=nl_layer,
+                             use_dropout=use_dropout, upsample=upsample)
     else:
-        raise NotImplementedError(
-            'Generator model name [%s] is not recognized' % which_model_netG)
+        raise NotImplementedError('Generator model name [%s] is not recognized' % net)
 
-    return init_net(netG, init_type, gpu_ids)
+    return init_net(net, init_type, gpu_ids)
 
 
-def define_D(input_nc, ndf, which_model_netD,
+def define_D(input_nc, ndf, netD,
              norm='batch', nl='lrelu',
              use_sigmoid=False, init_type='xavier', num_Ds=1, gpu_ids=[]):
-    netD = None
+    net = None
     norm_layer = get_norm_layer(layer_type=norm)
     nl = 'lrelu'  # use leaky relu for D
     nl_layer = get_non_linearity(layer_type=nl)
 
-    if which_model_netD == 'basic_128':
-        netD = D_NLayers(input_nc, ndf, n_layers=2, norm_layer=norm_layer,
-                         nl_layer=nl_layer, use_sigmoid=use_sigmoid, gpu_ids=gpu_ids)
-    elif which_model_netD == 'basic_256':
-        netD = D_NLayers(input_nc, ndf, n_layers=3, norm_layer=norm_layer,
-                         nl_layer=nl_layer, use_sigmoid=use_sigmoid, gpu_ids=gpu_ids)
-    elif which_model_netD == 'basic_128_multi':
-        netD = D_NLayersMulti(input_nc=input_nc, ndf=ndf, n_layers=2, norm_layer=norm_layer,
-                              use_sigmoid=use_sigmoid, gpu_ids=gpu_ids, num_D=num_Ds)
-    elif which_model_netD == 'basic_256_multi':
-        netD = D_NLayersMulti(input_nc=input_nc, ndf=ndf, n_layers=3, norm_layer=norm_layer,
-                              use_sigmoid=use_sigmoid, gpu_ids=gpu_ids, num_D=num_Ds)
+    if netD == 'basic_128':
+        net = D_NLayers(input_nc, ndf, n_layers=2, norm_layer=norm_layer,
+                        nl_layer=nl_layer, use_sigmoid=use_sigmoid)
+    elif netD == 'basic_256':
+        net = D_NLayers(input_nc, ndf, n_layers=3, norm_layer=norm_layer,
+                        nl_layer=nl_layer, use_sigmoid=use_sigmoid)
+    elif netD == 'basic_128_multi':
+        net = D_NLayersMulti(input_nc=input_nc, ndf=ndf, n_layers=2, norm_layer=norm_layer,
+                             use_sigmoid=use_sigmoid, num_D=num_Ds)
+    elif netD == 'basic_256_multi':
+        net = D_NLayersMulti(input_nc=input_nc, ndf=ndf, n_layers=3, norm_layer=norm_layer,
+                             use_sigmoid=use_sigmoid, num_D=num_Ds)
     else:
-        raise NotImplementedError(
-            'Discriminator model name [%s] is not recognized' % which_model_netD)
-    return init_net(netD, init_type, gpu_ids)
+        raise NotImplementedError('Discriminator model name [%s] is not recognized' % net)
+    return init_net(net, init_type, gpu_ids)
 
 
-def define_E(input_nc, output_nc, ndf, which_model_netE,
+def define_E(input_nc, output_nc, ndf, netE,
              norm='batch', nl='lrelu',
              init_type='xavier', gpu_ids=[], vaeLike=False):
-    netE = None
+    net = None
     norm_layer = get_norm_layer(layer_type=norm)
     nl = 'lrelu'  # use leaky relu for E
     nl_layer = get_non_linearity(layer_type=nl)
-    if which_model_netE == 'resnet_128':
-        netE = E_ResNet(input_nc, output_nc, ndf, n_blocks=4, norm_layer=norm_layer,
-                        nl_layer=nl_layer, gpu_ids=gpu_ids, vaeLike=vaeLike)
-    elif which_model_netE == 'resnet_256':
-        netE = E_ResNet(input_nc, output_nc, ndf, n_blocks=5, norm_layer=norm_layer,
-                        nl_layer=nl_layer, gpu_ids=gpu_ids, vaeLike=vaeLike)
-    elif which_model_netE == 'conv_128':
-        netE = E_NLayers(input_nc, output_nc, ndf, n_layers=4, norm_layer=norm_layer,
-                         nl_layer=nl_layer, gpu_ids=gpu_ids, vaeLike=vaeLike)
-    elif which_model_netE == 'conv_256':
-        netE = E_NLayers(input_nc, output_nc, ndf, n_layers=5, norm_layer=norm_layer,
-                         nl_layer=nl_layer, gpu_ids=gpu_ids, vaeLike=vaeLike)
+    if netE == 'resnet_128':
+        net = E_ResNet(input_nc, output_nc, ndf, n_blocks=4, norm_layer=norm_layer,
+                       nl_layer=nl_layer, vaeLike=vaeLike)
+    elif netE == 'resnet_256':
+        net = E_ResNet(input_nc, output_nc, ndf, n_blocks=5, norm_layer=norm_layer,
+                       nl_layer=nl_layer, vaeLike=vaeLike)
+    elif netE == 'conv_128':
+        net = E_NLayers(input_nc, output_nc, ndf, n_layers=4, norm_layer=norm_layer,
+                        nl_layer=nl_layer, vaeLike=vaeLike)
+    elif netE == 'conv_256':
+        net = E_NLayers(input_nc, output_nc, ndf, n_layers=5, norm_layer=norm_layer,
+                        nl_layer=nl_layer, vaeLike=vaeLike)
     else:
-        raise NotImplementedError(
-            'Encoder model name [%s] is not recognized' % which_model_netE)
+        raise NotImplementedError('Encoder model name [%s] is not recognized' % net)
 
-    return init_net(netE, init_type, gpu_ids)
+    return init_net(net, init_type, gpu_ids)
 
 
 class ListModule(object):
@@ -180,8 +177,7 @@ class ListModule(object):
         if not isinstance(new_module, nn.Module):
             raise ValueError('Not a Module')
         else:
-            self.module.add_module(
-                self.prefix + str(self.num_module), new_module)
+            self.module.add_module(self.prefix + str(self.num_module), new_module)
             self.num_module += 1
 
     def __len__(self):
@@ -195,10 +191,9 @@ class ListModule(object):
 
 class D_NLayersMulti(nn.Module):
     def __init__(self, input_nc, ndf=64, n_layers=3,
-                 norm_layer=nn.BatchNorm2d, use_sigmoid=False, gpu_ids=[], num_D=1):
+                 norm_layer=nn.BatchNorm2d, use_sigmoid=False, num_D=1):
         super(D_NLayersMulti, self).__init__()
         # st()
-        self.gpu_ids = gpu_ids
         self.num_D = num_D
         if num_D == 1:
             layers = self.get_layers(
@@ -267,9 +262,8 @@ class D_NLayersMulti(nn.Module):
 # Defines the conv discriminator with the specified arguments.
 class G_NLayers(nn.Module):
     def __init__(self, output_nc=3, nz=100, ngf=64, n_layers=3,
-                 norm_layer=None, nl_layer=None, gpu_ids=[]):
+                 norm_layer=None, nl_layer=None):
         super(G_NLayers, self).__init__()
-        self.gpu_ids = gpu_ids
 
         kw, s, padw = 4, 2, 1
         sequence = [nn.ConvTranspose2d(
@@ -302,9 +296,8 @@ class G_NLayers(nn.Module):
 
 class D_NLayers(nn.Module):
     def __init__(self, input_nc=3, ndf=64, n_layers=3,
-                 norm_layer=None, nl_layer=None, use_sigmoid=False, gpu_ids=[]):
+                 norm_layer=None, nl_layer=None, use_sigmoid=False):
         super(D_NLayers, self).__init__()
-        self.gpu_ids = gpu_ids
 
         kw, padw, use_bias = 4, 1, True
         # st()
@@ -401,9 +394,8 @@ class GANLoss(nn.Module):
 class G_Unet_add_input(nn.Module):
     def __init__(self, input_nc, output_nc, nz, num_downs, ngf=64,
                  norm_layer=None, nl_layer=None, use_dropout=False,
-                 gpu_ids=[], upsample='basic'):
+                 upsample='basic'):
         super(G_Unet_add_input, self).__init__()
-        self.gpu_ids = gpu_ids
         self.nz = nz
         max_nchn = 8
         # construct unet structure
@@ -585,9 +577,8 @@ class BasicBlock(nn.Module):
 
 class E_ResNet(nn.Module):
     def __init__(self, input_nc=3, output_nc=1, ndf=64, n_blocks=4,
-                 norm_layer=None, nl_layer=None, gpu_ids=[], vaeLike=False):
+                 norm_layer=None, nl_layer=None, vaeLike=False):
         super(E_ResNet, self).__init__()
-        self.gpu_ids = gpu_ids
         self.vaeLike = vaeLike
         max_ndf = 4
         conv_layers = [
@@ -623,9 +614,8 @@ class E_ResNet(nn.Module):
 # at the bottleneck
 class G_Unet_add_all(nn.Module):
     def __init__(self, input_nc, output_nc, nz, num_downs, ngf=64,
-                 norm_layer=None, nl_layer=None, use_dropout=False, gpu_ids=[], upsample='basic'):
+                 norm_layer=None, nl_layer=None, use_dropout=False, upsample='basic'):
         super(G_Unet_add_all, self).__init__()
-        self.gpu_ids = gpu_ids
         self.nz = nz
         # construct unet structure
         unet_block = UnetBlock_with_z(ngf * 8, ngf * 8, ngf * 8, nz, None, innermost=True,
@@ -728,9 +718,8 @@ class UnetBlock_with_z(nn.Module):
 
 class E_NLayers(nn.Module):
     def __init__(self, input_nc, output_nc=1, ndf=64, n_layers=3,
-                 norm_layer=None, nl_layer=None, gpu_ids=[], vaeLike=False):
+                 norm_layer=None, nl_layer=None, vaeLike=False):
         super(E_NLayers, self).__init__()
-        self.gpu_ids = gpu_ids
         self.vaeLike = vaeLike
 
         kw, padw = 4, 1
