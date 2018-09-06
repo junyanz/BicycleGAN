@@ -98,7 +98,6 @@ class BiCycleGANModel(BaseModel):
     def forward(self):
         # get real images
         half_size = self.opt.batch_size // 2
-        import pdb; pdb.set_trace()
         # A1, B1 for encoded; A2, B2 for random
         self.real_A_encoded = self.real_A[0:half_size]
         self.real_B_encoded = self.real_B[0:half_size]
@@ -141,7 +140,6 @@ class BiCycleGANModel(BaseModel):
     def backward_G_GAN(self, fake, netD=None, ll=0.0):
         if ll > 0.0:
             pred_fake = netD(fake)
-            import pdb; pdb.set_trace()
             loss_G_GAN, _ = self.criterionGAN(pred_fake, True)
         else:
             loss_G_GAN = 0
@@ -153,7 +151,6 @@ class BiCycleGANModel(BaseModel):
         if self.opt.use_same_D:
             self.loss_G_GAN2 = self.backward_G_GAN(self.fake_data_random, self.netD, self.opt.lambda_GAN2)
         else:
-            import pdb; pdb.set_trace()
             self.loss_G_GAN2 = self.backward_G_GAN(self.fake_data_random, self.netD2, self.opt.lambda_GAN2)
         # 2. KL loss
         if self.opt.lambda_kl > 0.0:
