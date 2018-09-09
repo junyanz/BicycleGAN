@@ -23,7 +23,7 @@ CUDA_VISIBLE_DEVICES=${GPU_ID} python ./train.py \
   --dataroot ./datasets/${CLASS} \
   --name ${NAME} \
   --model ${MODEL} \
-  --which_direction ${DIRECTION} \
+  --direction ${DIRECTION} \
   --checkpoints_dir ${CHECKPOINTS_DIR} \
   --loadSize ${LOAD_SIZE} \
   --fineSize ${FINE_SIZE} \

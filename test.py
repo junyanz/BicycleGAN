@@ -30,9 +30,9 @@ if opt.sync:
     z_samples = model.get_z_random(opt.n_samples + 1, opt.nz)
 
 # test stage
-for i, data in enumerate(islice(dataset, opt.how_many)):
+for i, data in enumerate(islice(dataset, opt.num_test)):
     model.set_input(data)
-    print('process input image %3.3d/%3.3d' % (i, opt.how_many))
+    print('process input image %3.3d/%3.3d' % (i, opt.num_test))
     if not opt.sync:
         z_samples = model.get_z_random(opt.n_samples + 1, opt.nz)
     for nn in range(opt.n_samples + 1):

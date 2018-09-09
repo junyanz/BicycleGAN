@@ -69,7 +69,7 @@ CUDA_VISIBLE_DEVICES=${GPU_ID} python ./train.py \
   --name ${NAME} \
   --model ${MODEL} \
   --display_port ${PORT} \
-  --which_direction ${DIRECTION} \
+  --direction ${DIRECTION} \
   --checkpoints_dir ${CHECKPOINTS_DIR} \
   --loadSize ${LOAD_SIZE} \
   --fineSize ${FINE_SIZE} \

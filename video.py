@@ -43,8 +43,8 @@ total_frames = opt.num_frames * opt.n_samples
 z_samples = get_random_z(opt)
 frame_rows = [[] for n in range(total_frames)]
 
-for i, data in enumerate(islice(dataset, opt.how_many)):
-    print('process input image %3.3d/%3.3d' % (i, opt.how_many))
+for i, data in enumerate(islice(dataset, opt.num_test)):
+    print('process input image %3.3d/%3.3d' % (i, opt.num_test))
     model.set_input(data)
     real_A = util.tensor2im(model.real_A)
     wb = opt.border
