@@ -154,8 +154,7 @@ class BiCycleGANModel(BaseModel):
             self.loss_G_GAN2 = self.backward_G_GAN(self.fake_data_random, self.netD2, self.opt.lambda_GAN2)
         # 2. KL loss
         if self.opt.lambda_kl > 0.0:
-            kl_element = self.mu.pow(2).add_(self.logvar.exp()).mul_(-1).add_(1).add_(self.logvar)
-            self.loss_kl = torch.sum(kl_element).mul_(-0.5) * self.opt.lambda_kl
+            self.loss_kl = torch.sum(1 + self.logvar - self.mu.pow(2) - self.logvar.exp()) * (-0.5 * self.opt.lambda_kl)
         else:
             self.loss_kl = 0
         # 3, reconstruction |fake_B-real_B|
