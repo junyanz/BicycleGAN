@@ -164,31 +164,6 @@ def define_E(input_nc, output_nc, ndf, netE,
     return init_net(net, init_type, gpu_ids)
 
 
-class ListModule(object):
-    # should work with all kind of module
-    def __init__(self, module, prefix, *args):
-        self.module = module
-        self.prefix = prefix
-        self.num_module = 0
-        for new_module in args:
-            self.append(new_module)
-
-    def append(self, new_module):
-        if not isinstance(new_module, nn.Module):
-            raise ValueError('Not a Module')
-        else:
-            self.module.add_module(self.prefix + str(self.num_module), new_module)
-            self.num_module += 1
-
-    def __len__(self):
-        return self.num_module
-
-    def __getitem__(self, i):
-        if i < 0 or i >= self.num_module:
-            raise IndexError('Out of bound')
-        return getattr(self.module, self.prefix + str(i))
-
-
 class D_NLayersMulti(nn.Module):
     def __init__(self, input_nc, ndf=64, n_layers=3,
                  norm_layer=nn.BatchNorm2d, use_sigmoid=False, num_D=1):
@@ -200,17 +175,16 @@ class D_NLayersMulti(nn.Module):
                 input_nc, ndf, n_layers, norm_layer, use_sigmoid)
             self.model = nn.Sequential(*layers)
         else:
-            self.model = ListModule(self, 'model')
             layers = self.get_layers(
                 input_nc, ndf, n_layers, norm_layer, use_sigmoid)
-            self.model.append(nn.Sequential(*layers))
+            self.add_module("model_0", nn.Sequential(*layers))
             self.down = nn.AvgPool2d(3, stride=2, padding=[
                                      1, 1], count_include_pad=False)
-            for i in range(num_D - 1):
-                ndf_i = int(round(ndf / (2**(i + 1))))
+            for i in range(1, num_D):
+                ndf_i = int(round(ndf / (2**i)))
                 layers = self.get_layers(
                     input_nc, ndf_i, n_layers, norm_layer, use_sigmoid)
-                self.model.append(nn.Sequential(*layers))
+                self.add_module("model_%d" % i, nn.Sequential(*layers))
 
     def get_layers(self, input_nc, ndf=64, n_layers=3,
                    norm_layer=nn.BatchNorm2d, use_sigmoid=False):
@@ -253,7 +227,8 @@ class D_NLayersMulti(nn.Module):
         result = []
         down = input
         for i in range(self.num_D):
-            result.append(self.model[i](down))
+            model = getattr(self, "model_%d" % i)
+            result.append(model(down))
             if i != self.num_D - 1:
                 down = self.down(down)
         return result
