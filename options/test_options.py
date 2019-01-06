@@ -11,5 +11,7 @@ class TestOptions(BaseOptions):
         parser.add_argument('--no_encode', action='store_true', help='do not produce encoded image')
         parser.add_argument('--sync', action='store_true', help='use the same latent code for different input images')
         parser.add_argument('--aspect_ratio', type=float, default=1.0, help='aspect ratio for the results')
+        parser.add_argument('--eval', action='store_true', help='use eval mode during test time.')
+
         self.isTrain = False
         return parser

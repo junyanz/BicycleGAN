@@ -24,21 +24,21 @@ class BiCycleGANModel(BaseModel):
         use_vae = True
         self.model_names = ['G']
         self.netG = networks.define_G(opt.input_nc, opt.output_nc, opt.nz, opt.ngf, netG=opt.netG,
-                                      norm=opt.norm, nl=opt.nl, use_dropout=opt.use_dropout, init_type=opt.init_type,
-                                      gpu_ids=self.gpu_ids, where_add=self.opt.where_add, upsample=opt.upsample)
+                                      norm=opt.norm, nl=opt.nl, use_dropout=opt.use_dropout, init_type=opt.init_type, init_gain=opt.init_gain,
+                                      gpu_ids=self.gpu_ids, where_add=opt.where_add, upsample=opt.upsample)
         D_output_nc = opt.input_nc + opt.output_nc if opt.conditional_D else opt.output_nc
         if use_D:
             self.model_names += ['D']
             self.netD = networks.define_D(D_output_nc, opt.ndf, netD=opt.netD, norm=opt.norm, nl=opt.nl,
-                                          init_type=opt.init_type, num_Ds=opt.num_Ds, gpu_ids=self.gpu_ids)
+                                          init_type=opt.init_type, init_gain=opt.init_gain, num_Ds=opt.num_Ds, gpu_ids=self.gpu_ids)
         if use_D2:
             self.model_names += ['D2']
             self.netD2 = networks.define_D(D_output_nc, opt.ndf, netD=opt.netD2, norm=opt.norm, nl=opt.nl,
-                                           init_type=opt.init_type, num_Ds=opt.num_Ds, gpu_ids=self.gpu_ids)
+                                           init_type=opt.init_type, init_gain=opt.init_gain, num_Ds=opt.num_Ds, gpu_ids=self.gpu_ids)
         if use_E:
             self.model_names += ['E']
             self.netE = networks.define_E(opt.output_nc, opt.nz, opt.nef, netE=opt.netE, norm=opt.norm, nl=opt.nl,
-                                          init_type=opt.init_type, gpu_ids=self.gpu_ids, vaeLike=use_vae)
+                                          init_type=opt.init_type, init_gain=opt.init_gain, gpu_ids=self.gpu_ids, vaeLike=use_vae)
 
         if opt.isTrain:
             self.criterionGAN = networks.GANLoss(gan_mode=opt.gan_mode).to(self.device)

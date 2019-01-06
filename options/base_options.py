@@ -53,10 +53,13 @@ class BaseOptions():
         # extra parameters
         parser.add_argument('--where_add', type=str, default='all', help='input|all|middle; where to add z in the network G')
         parser.add_argument('--conditional_D', action='store_true', help='if use conditional GAN for D')
-        parser.add_argument('--init_type', type=str, default='xavier', help='network initialization [normal|xavier|kaiming|orthogonal]')
+        parser.add_argument('--init_type', type=str, default='xavier', help='network initialization [normal | xavier | kaiming | orthogonal]')
+        parser.add_argument('--init_gain', type=float, default=0.02, help='scaling factor for normal, xavier and orthogonal.')
         parser.add_argument('--center_crop', action='store_true', help='if apply for center cropping for the test')
         parser.add_argument('--verbose', action='store_true', help='if specified, print more debugging information')
         parser.add_argument('--suffix', default='', type=str, help='customized suffix: opt.name = opt.name + suffix: e.g., {model}_{netG}_size{load_size}')
+        parser.add_argument('--display_winsize', type=int, default=256, help='display window size')
+
         # special tasks
         self.initialized = True
         return parser
