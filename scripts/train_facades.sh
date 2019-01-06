@@ -6,8 +6,8 @@ NZ=8
 NO_FLIP=''
 DIRECTION='BtoA'
 LOAD_SIZE=256
-FINE_SIZE=256
-INPUT_NC=1
+CROP_SIZE=256
+INPUT_NC=3
 NITER=200
 NITER_DECAY=200
 SAVE_EPOCH=25
@@ -26,8 +26,8 @@ python ./train.py \
   --model ${MODEL} \
   --direction ${DIRECTION} \
   --checkpoints_dir ${CHECKPOINTS_DIR} \
-  --loadSize ${LOAD_SIZE} \
-  --fineSize ${FINE_SIZE} \
+  --load_size ${LOAD_SIZE} \
+  --crop_size ${CROP_SIZE} \
   --nz ${NZ} \
   --input_nc ${INPUT_NC} \
   --niter ${NITER} \

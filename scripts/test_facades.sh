@@ -6,7 +6,7 @@ RESULTS_DIR='./results/facades'
 CLASS='facades'
 DIRECTION='BtoA' # from domain A to domain B
 LOAD_SIZE=286 # scale images to this size
-FINE_SIZE=256 # then crop to this size
+CROP_SIZE=256 # then crop to this size
 INPUT_NC=3  # number of channels in the input image
 
 # misc
@@ -22,8 +22,8 @@ CUDA_VISIBLE_DEVICES=${GPU_ID} python ./test.py \
   --checkpoints_dir ./pretrained_models/ \
   --name ${CLASS} \
   --direction ${DIRECTION} \
-  --loadSize ${FINE_SIZE} \
-  --fineSize ${FINE_SIZE} \
+  --load_size ${LOAD_SIZE} \
+  --crop_size ${CROP_SIZE} \
   --input_nc ${INPUT_NC} \
   --num_test ${NUM_TEST} \
   --n_samples ${NUM_SAMPLES} \

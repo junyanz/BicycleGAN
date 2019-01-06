@@ -8,7 +8,7 @@ E_PATH='./pretrained_models/map2aerial_net_E.pth'
 CLASS='maps'
 DIRECTION='BtoA' # from domain A to domain B
 LOAD_SIZE=512 # scale images to this size
-FINE_SIZE=512 # then crop to this size
+CROP_SIZE=512 # then crop to this size
 INPUT_NC=3  # number of channels in the input image
 ASPECT_RATIO=1.0
  # change aspect ratio for the test images
@@ -26,8 +26,8 @@ CUDA_VISIBLE_DEVICES=${GPU_ID} python ./test.py \
   --checkpoints_dir ./pretrained_models/ \
   --name ${CLASS} \
   --direction ${DIRECTION} \
-  --loadSize ${FINE_SIZE} \
-  --fineSize ${FINE_SIZE} \
+  --load_size ${LOAD_SIZE} \
+  --crop_size ${CROP_SIZE} \
   --input_nc ${INPUT_NC} \
   --num_test ${NUM_TEST} \
   --n_samples ${NUM_SAMPLES} \

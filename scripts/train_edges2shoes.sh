@@ -6,7 +6,7 @@ NZ=8
 NO_FLIP='--no_flip'
 DIRECTION='AtoB'
 LOAD_SIZE=256
-FINE_SIZE=256
+CROP_SIZE=256
 INPUT_NC=1
 NITER=30
 NITER_DECAY=30
@@ -25,8 +25,8 @@ CUDA_VISIBLE_DEVICES=${GPU_ID} python ./train.py \
   --model ${MODEL} \
   --direction ${DIRECTION} \
   --checkpoints_dir ${CHECKPOINTS_DIR} \
-  --loadSize ${LOAD_SIZE} \
-  --fineSize ${FINE_SIZE} \
+  --load_size ${LOAD_SIZE} \
+  --crop_size ${CROP_SIZE} \
   --nz ${NZ} \
   --input_nc ${INPUT_NC} \
   --niter ${NITER} \

@@ -7,7 +7,7 @@ G_PATH='./pretrained_models/edges2shoes_net_G.pth'
 CLASS='edges2shoes'
 DIRECTION='AtoB'
 LOAD_SIZE=256
-FINE_SIZE=256
+CROP_SIZE=256
 INPUT_NC=1
 
 # misc
@@ -22,7 +22,7 @@ CUDA_VISIBLE_DEVICES=${GPU_ID} python ./video.py \
   --checkpoints_dir ./pretrained_models/ \
   --name ${CLASS} \
   --direction ${DIRECTION} \
-  --loadSize ${FINE_SIZE} --fineSize ${FINE_SIZE} \
+  --load_size ${LOAD_SIZE} --crop_size ${CROP_SIZE} \
   --input_nc ${INPUT_NC} \
   --num_test ${NUM_TEST} \
   --n_samples ${NUM_SAMPLES} \

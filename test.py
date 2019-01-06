@@ -1,6 +1,6 @@
 import os
 from options.test_options import TestOptions
-from data import CreateDataLoader
+from data import create_dataset
 from models import create_model
 from util.visualizer import save_images
 from itertools import islice
@@ -14,8 +14,7 @@ opt.batch_size = 1   # test code only supports batch_size=1
 opt.serial_batches = True  # no shuffle
 
 # create dataset
-data_loader = CreateDataLoader(opt)
-dataset = data_loader.load_data()
+dataset = create_dataset(opt)
 model = create_model(opt)
 model.setup(opt)
 model.eval()
@@ -46,6 +45,6 @@ for i, data in enumerate(islice(dataset, opt.num_test)):
             names.append('random_sample%2.2d' % nn)
 
     img_path = 'input_%3.3d' % i
-    save_images(webpage, images, names, img_path, aspect_ratio=opt.aspect_ratio, width=opt.fineSize)
+    save_images(webpage, images, names, img_path, aspect_ratio=opt.aspect_ratio, width=opt.crop_size)
 
 webpage.save()

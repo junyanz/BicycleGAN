@@ -4,18 +4,15 @@ from . import networks
 
 
 class BiCycleGANModel(BaseModel):
-    def name(self):
-        return 'BiCycleGANModel'
-
     @staticmethod
     def modify_commandline_options(parser, is_train=True):
         return parser
 
-    def initialize(self, opt):
+    def __init__(self, opt):
         if opt.isTrain:
             assert opt.batch_size % 2 == 0  # load two images at one time.
 
-        BaseModel.initialize(self, opt)
+        BaseModel.__init__(self, opt)
         # specify the training losses you want to print out. The program will call base_model.get_current_losses
         self.loss_names = ['G_GAN', 'D', 'G_GAN2', 'D2', 'G_L1', 'z_L1', 'kl']
         # specify the images you want to save/display. The program will call base_model.get_current_visuals
@@ -30,22 +27,21 @@ class BiCycleGANModel(BaseModel):
                                       norm=opt.norm, nl=opt.nl, use_dropout=opt.use_dropout, init_type=opt.init_type,
                                       gpu_ids=self.gpu_ids, where_add=self.opt.where_add, upsample=opt.upsample)
         D_output_nc = opt.input_nc + opt.output_nc if opt.conditional_D else opt.output_nc
-        use_sigmoid = opt.gan_mode == 'dcgan'
         if use_D:
             self.model_names += ['D']
             self.netD = networks.define_D(D_output_nc, opt.ndf, netD=opt.netD, norm=opt.norm, nl=opt.nl,
-                                          use_sigmoid=use_sigmoid, init_type=opt.init_type, num_Ds=opt.num_Ds, gpu_ids=self.gpu_ids)
+                                          init_type=opt.init_type, num_Ds=opt.num_Ds, gpu_ids=self.gpu_ids)
         if use_D2:
             self.model_names += ['D2']
             self.netD2 = networks.define_D(D_output_nc, opt.ndf, netD=opt.netD2, norm=opt.norm, nl=opt.nl,
-                                           use_sigmoid=use_sigmoid, init_type=opt.init_type, num_Ds=opt.num_Ds, gpu_ids=self.gpu_ids)
+                                           init_type=opt.init_type, num_Ds=opt.num_Ds, gpu_ids=self.gpu_ids)
         if use_E:
             self.model_names += ['E']
             self.netE = networks.define_E(opt.output_nc, opt.nz, opt.nef, netE=opt.netE, norm=opt.norm, nl=opt.nl,
                                           init_type=opt.init_type, gpu_ids=self.gpu_ids, vaeLike=use_vae)
 
         if opt.isTrain:
-            self.criterionGAN = networks.GANLoss(mse_loss=not use_sigmoid).to(self.device)
+            self.criterionGAN = networks.GANLoss(gan_mode=opt.gan_mode).to(self.device)
             self.criterionL1 = torch.nn.L1Loss()
             self.criterionZ = torch.nn.L1Loss()
             # initialize optimizers
