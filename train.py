@@ -1,6 +1,6 @@
 """General-purpose training script for image-to-image translation.
-This script works for various models (with option '--model': e.g., pix2pix, cyclegan, colorization) and
-different datasets (with option '--dataset_mode': e.g., aligned, unaligned, `single, colorization).
+This script works for various models (with option '--model': e.g., bicycle_gan, pix2pix, test) and
+different datasets (with option '--dataset_mode': e.g., aligned, single).
 You need to specify the dataset ('--dataroot'), experiment name ('--name'), and model ('--model').
 It first creates model, dataset, and visualizer given the option.
 It then does standard network training. During the training, it also visualize/save the images, print/save the loss plot, and save models.
