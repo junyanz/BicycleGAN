@@ -60,6 +60,7 @@ class BiCycleGANModel(BaseModel):
                 self.optimizers.append(self.optimizer_D2)
 
     def is_train(self):
+        """check if the current batch is good for training."""
         return self.opt.isTrain and self.real_A.size(0) == self.opt.batch_size
 
     def set_input(self, input):

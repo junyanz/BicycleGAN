@@ -69,6 +69,10 @@ class BaseModel(ABC):
         """Run forward pass; called by both functions <optimize_parameters> and <test>."""
         pass
 
+    def is_train(self):
+        """check if the current batch is good for training."""
+        return True
+
     @abstractmethod
     def optimize_parameters(self):
         """Calculate losses, gradients, and update network weights; called in every training iteration"""
