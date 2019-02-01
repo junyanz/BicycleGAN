@@ -40,7 +40,7 @@ class BaseOptions():
         # model parameters
         parser.add_argument('--num_Ds', type=int, default=2, help='number of Discrminators')
         parser.add_argument('--netD', type=str, default='basic_256_multi', help='selects model to use for netD')
-        parser.add_argument('--netD2', type=str, default='basic_256_multi', help='selects model to use for netD')
+        parser.add_argument('--netD2', type=str, default='basic_256_multi', help='selects model to use for netD2')
         parser.add_argument('--netG', type=str, default='unet_256', help='selects model to use for netG')
         parser.add_argument('--netE', type=str, default='resnet_256', help='selects model to use for netE')
         parser.add_argument('--nef', type=int, default=64, help='# of encoder filters in the first conv layer')
