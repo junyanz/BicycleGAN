@@ -35,6 +35,8 @@ class BiCycleGANModel(BaseModel):
             self.model_names += ['D2']
             self.netD2 = networks.define_D(D_output_nc, opt.ndf, netD=opt.netD2, norm=opt.norm, nl=opt.nl,
                                            init_type=opt.init_type, init_gain=opt.init_gain, num_Ds=opt.num_Ds, gpu_ids=self.gpu_ids)
+        else:
+            self.netD2 = None
         if use_E:
             self.model_names += ['E']
             self.netE = networks.define_E(opt.output_nc, opt.nz, opt.nef, netE=opt.netE, norm=opt.norm, nl=opt.nl,
@@ -164,7 +166,7 @@ class BiCycleGANModel(BaseModel):
         self.loss_G.backward(retain_graph=True)
 
     def update_D(self):
-        self.set_requires_grad(self.netD, True)
+        self.set_requires_grad([self.netD, self.netD2], True)
         # update D1
         if self.opt.lambda_GAN > 0.0:
             self.optimizer_D.zero_grad()
@@ -188,7 +190,7 @@ class BiCycleGANModel(BaseModel):
 
     def update_G_and_E(self):
         # update G and E
-        self.set_requires_grad(self.netD, False)
+        self.set_requires_grad([self.netD, self.netD2], False)
         self.optimizer_E.zero_grad()
         self.optimizer_G.zero_grad()
         self.backward_EG()
