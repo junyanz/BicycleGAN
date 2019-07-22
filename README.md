@@ -16,7 +16,7 @@ Pytorch implementation for multimodal image-to-image translation. For example,  
 [Jun-Yan Zhu](https://people.eecs.berkeley.edu/~junyanz/),
  [Richard Zhang](https://richzhang.github.io/), [Deepak Pathak](http://people.eecs.berkeley.edu/~pathak/), [Trevor Darrell](https://people.eecs.berkeley.edu/~trevor/), [Alexei A. Efros](https://people.eecs.berkeley.edu/~efros/), [Oliver Wang](http://www.oliverwang.info/), [Eli Shechtman](https://research.adobe.com/person/eli-shechtman/).  
  UC Berkeley and Adobe Research  
-In NIPS, 2017.
+In Neural Information Processing Systems, 2017.
 
 ## Example results
 <img src='imgs/results_matrix.jpg' width=820>  
