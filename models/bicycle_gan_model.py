@@ -100,6 +100,7 @@ class BiCycleGANModel(BaseModel):
         # A1, B1 for encoded; A2, B2 for random
         self.real_A_encoded = self.real_A[0:half_size]
         self.real_B_encoded = self.real_B[0:half_size]
+        self.real_A_random = self.real_A[half_size:]
         self.real_B_random = self.real_B[half_size:]
         # get encoded z
         self.z_encoded, self.mu, self.logvar = self.encode(self.real_B_encoded)
@@ -113,7 +114,7 @@ class BiCycleGANModel(BaseModel):
             self.fake_data_encoded = torch.cat([self.real_A_encoded, self.fake_B_encoded], 1)
             self.real_data_encoded = torch.cat([self.real_A_encoded, self.real_B_encoded], 1)
             self.fake_data_random = torch.cat([self.real_A_encoded, self.fake_B_random], 1)
-            self.real_data_random = torch.cat([self.real_A[half_size:], self.real_B_random], 1)
+            self.real_data_random = torch.cat([self.real_A_random, self.real_B_random], 1)
         else:
             self.fake_data_encoded = self.fake_B_encoded
             self.fake_data_random = self.fake_B_random
