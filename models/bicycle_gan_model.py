@@ -199,9 +199,12 @@ class BiCycleGANModel(BaseModel):
 
             # update G only
             if self.opt.lambda_z > 0.0:
+                self.set_requires_grad([self.netE], False)
                 self.backward_G_alone()
-            self.optimizer_G.step()
+                self.set_requires_grad([self.netE], True)
+
             self.optimizer_E.step()
+            self.optimizer_G.step()
 
     def optimize_parameters(self):
         self.forward()
