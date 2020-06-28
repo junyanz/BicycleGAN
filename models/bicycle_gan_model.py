@@ -76,7 +76,7 @@ class BiCycleGANModel(BaseModel):
             z = torch.rand(batch_size, nz) * 2.0 - 1.0
         elif random_type == 'gauss':
             z = torch.randn(batch_size, nz)
-        return z.to(self.device)
+        return z.detach().to(self.device)
 
     def encode(self, input_image):
         mu, logvar = self.netE.forward(input_image)
@@ -184,25 +184,24 @@ class BiCycleGANModel(BaseModel):
     def backward_G_alone(self):
         # 3, reconstruction |(E(G(A, z_random)))-z_random|
         if self.opt.lambda_z > 0.0:
-            self.loss_z_L1 = torch.mean(torch.abs(self.mu2 - self.z_random)) * self.opt.lambda_z
+            self.loss_z_L1 = self.criterionZ(self.mu2, self.z_random) * self.opt.lambda_z
             self.loss_z_L1.backward()
         else:
             self.loss_z_L1 = 0.0
 
     def update_G_and_E(self):
         # update G and E
-        self.set_requires_grad([self.netD, self.netD2], False)
-        self.optimizer_E.zero_grad()
-        self.optimizer_G.zero_grad()
-        self.backward_EG()
-        self.optimizer_G.step()
-        self.optimizer_E.step()
-        # update G only
-        if self.opt.lambda_z > 0.0:
-            self.optimizer_G.zero_grad()
+        with torch.autograd.set_detect_anomaly(True):
+            self.set_requires_grad([self.netD, self.netD2], False)
             self.optimizer_E.zero_grad()
-            self.backward_G_alone()
+            self.optimizer_G.zero_grad()
+            self.backward_EG()
+
+            # update G only
+            if self.opt.lambda_z > 0.0:
+                self.backward_G_alone()
             self.optimizer_G.step()
+            self.optimizer_E.step()
 
     def optimize_parameters(self):
         self.forward()
