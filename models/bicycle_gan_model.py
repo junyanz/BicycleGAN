@@ -191,20 +191,19 @@ class BiCycleGANModel(BaseModel):
 
     def update_G_and_E(self):
         # update G and E
-        with torch.autograd.set_detect_anomaly(True):
-            self.set_requires_grad([self.netD, self.netD2], False)
-            self.optimizer_E.zero_grad()
-            self.optimizer_G.zero_grad()
-            self.backward_EG()
+        self.set_requires_grad([self.netD, self.netD2], False)
+        self.optimizer_E.zero_grad()
+        self.optimizer_G.zero_grad()
+        self.backward_EG()
 
-            # update G only
-            if self.opt.lambda_z > 0.0:
-                self.set_requires_grad([self.netE], False)
-                self.backward_G_alone()
-                self.set_requires_grad([self.netE], True)
+        # update G alone
+        if self.opt.lambda_z > 0.0:
+            self.set_requires_grad([self.netE], False)
+            self.backward_G_alone()
+            self.set_requires_grad([self.netE], True)
 
-            self.optimizer_E.step()
-            self.optimizer_G.step()
+        self.optimizer_E.step()
+        self.optimizer_G.step()
 
     def optimize_parameters(self):
         self.forward()
