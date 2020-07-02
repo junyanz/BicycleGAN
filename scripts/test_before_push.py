@@ -11,7 +11,7 @@ def run(command):
 
 if __name__ == '__main__':
     if not os.path.exists('./datasets/mini_pix2pix'):
-        run('bash ./datasets/download_cyclegan_dataset.sh mini_pix2pix')
+        run('bash ./datasets/download_mini_dataset.sh mini_pix2pix')
 
     # pix2pix train/test
     run('python train.py --model pix2pix --name temp_pix2pix --dataroot ./datasets/mini_pix2pix --niter 1 --niter_decay 0 --save_latest_freq 10 --display_id -1')
