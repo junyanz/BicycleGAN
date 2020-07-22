@@ -142,6 +142,14 @@ bash ./datasets/download_testset.sh maps
 bash ./scripts/test_maps.sh
 ```
 
+### Metrics
+
+Figure 6 shows realism vs diversity of our method.
+
+- **Realism** We use the Amazon Mechanical Turk (AMT) Real vs Fake test from [this repository](https://github.com/phillipi/AMT_Real_vs_Fake), first introduced in [this work](http://richzhang.github.io/colorization/).
+
+- **Diversity** For each input image, we produce 20 translations by randomly sampling 20 `z` vectors. We compute LPIPS distance between consecutive pairs to get 19 distances. See [this script](https://github.com/richzhang/PerceptualSimilarity/blob/master/compute_dists_pair.py (note that our paper used version `-v 0.0`). This is done for 100 input images (with 19 paired distances each), resulting in 1900 total distances, which are averaged together. A larger number means higher diversity.
+
 ### Citation
 
 If you find this useful for your research, please use the following.
