@@ -13,7 +13,7 @@ Pytorch implementation for multimodal image-to-image translation. For example,  
 <img src='imgs/teaser.jpg' width=850>  
 
 **Toward Multimodal Image-to-Image Translation.**  
-[Jun-Yan Zhu](https://people.eecs.berkeley.edu/~junyanz/),
+[Jun-Yan Zhu](https://www.cs.cmu.edu/~junyanz/),
  [Richard Zhang](https://richzhang.github.io/), [Deepak Pathak](http://people.eecs.berkeley.edu/~pathak/), [Trevor Darrell](https://people.eecs.berkeley.edu/~trevor/), [Alexei A. Efros](https://people.eecs.berkeley.edu/~efros/), [Oliver Wang](http://www.oliverwang.info/), [Eli Shechtman](https://research.adobe.com/person/eli-shechtman/).  
  UC Berkeley and Adobe Research  
 In Neural Information Processing Systems, 2017.
